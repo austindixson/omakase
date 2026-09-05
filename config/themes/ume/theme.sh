@@ -1,5 +1,5 @@
 # Ume — plum dusk. Rose, pine, iris. Rose Pine-adjacent, not a copy.
-# Shared by SketchyBar, JankyBorders, and Ghostty (see ghostty.conf).
+# Shared by workspace pills, JankyBorders, and Ghostty (see ghostty.conf).
 
 THEME_NAME="ume"
 THEME_LABEL="Ume"

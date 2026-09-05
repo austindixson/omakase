@@ -1,4 +1,4 @@
-# Omakase Super map — AeroSpace (FM-OMAKASE-1)
+# Omakase Super map — AeroSpace (FM-OMAKASE-1 / FM-OMAKASE-2)
 #
 # Super = Command (cmd). Same muscle memory as Omarchy / Hyprland.
 # SIP stays on. This file is the window-manager half of the Super map.
@@ -17,7 +17,7 @@
 # Commands:https://nikitabobko.github.io/AeroSpace/commands
 #
 # Launcher: Super+Space + daily app launches → bin/omakase-launch
-# Agents: Super+Shift+Ctrl+A / Super+Ctrl+Return → bin/omakase-agent
+# Agents: Super+Shift+Ctrl+A / Option+Enter → bin/omakase-agent
 # Lock: Super+Ctrl+L → bin/omakase-lock
 # Theme pick is Super+Ctrl+Shift+Space → bin/omakase-theme cycle.
 # Do not bind clipboard chords here.
@@ -32,7 +32,8 @@ after-startup-command = [
     'exec-and-forget sketchybar',
 ]
 
-# Workspace pills on SketchyBar. Does not change section A bind commands.
+# Workspace pills in the native menu bar (SketchyBar overlay).
+# Does not change section A bind commands.
 exec-on-workspace-change = [
     '/bin/bash',
     '-c',
@@ -43,27 +44,35 @@ exec-on-workspace-change = [
 # 'scratch' is the Mac stand-in for Hyprland special:scratchpad.
 persistent-workspaces = ['1', '2', '3', '4', 'scratch']
 
+# Hyprland-feel tree: tiles (not accordion), flatten + opposite-orientation
+# so nested splits read like Hyprland binary splits. See docs/tiling.md.
+# https://nikitabobko.github.io/AeroSpace/guide#normalization
 default-root-container-layout = 'tiles'
 default-root-container-orientation = 'auto'
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
 automatically-unhide-macos-hidden-apps = false
 key-mapping.preset = 'qwerty'
 
-# Chrome for the themed bar + JankyBorders. Not per-theme (one gap set).
-# Top 40 clears the 32px SketchyBar; inner 8 sits next to 5px borders.
+# Hyprland-ish gaps (inner ~ gaps_in, outer ~ gaps_out). One set, not per-theme.
+# Top matches the other outer sides: workspace pills overlay the native menu
+# bar (24px). macOS already reserves that strip. See docs/tiling.md.
 gaps.inner.horizontal = 8
 gaps.inner.vertical = 8
-gaps.outer.left = 8
-gaps.outer.bottom = 8
-gaps.outer.top = 40
-gaps.outer.right = 8
+gaps.outer.left = 10
+gaps.outer.bottom = 10
+gaps.outer.top = 10
+gaps.outer.right = 10
 
-# Native Apple apps stay Mac apps: float so they keep opening natively.
+# New windows tile into the tree. Float is only the Apple-pro exceptions
+# below (first match wins; catch-all tiling is last).
 # Current AeroSpace syntax: if = 'test …' (legacy if.app-* is deprecated).
 on-window-detected = [
     { if = 'test %{app-bundle-id} = com.apple.FinalCut', run = 'layout floating' },
     { if = 'test %{app-bundle-id} = com.apple.logic10', run = 'layout floating' },
     { if = 'test %{app-bundle-id} = com.apple.Photos', run = 'layout floating' },
     { if = 'test %{app-bundle-id} = com.apple.QuickTimePlayerX', run = 'layout floating' },
+    { run = 'layout tiling' },
 ]
 
 # mode.main.binding is the Super map. Section A chords are live.
@@ -164,11 +173,11 @@ on-window-detected = [
     # B — Launch (Omakase launcher)
     # -------------------------------------------------------------------------
     #
-    # Super+Space is cmd-space. AeroSpace owns the chord while this map
-    # is loaded. Spotlight is not rewritten in System Settings. Reclaim:
-    # delete cmd-space and reload, or quit AeroSpace. If Spotlight still
-    # wins, see config/launcher/README.md (contested-chord fallback).
-    # Super+Ctrl+Shift+Space (theme cycle) is a different chord.
+    # Super+Space is cmd-space. Required cold-Mac step: disable Spotlight’s
+    # ⌘Space (System Settings → Keyboard → Keyboard Shortcuts → Spotlight
+    # → uncheck Show Spotlight search) so this bind wins. Reclaim: turn
+    # that checkbox back on, delete cmd-space, reload. See
+    # config/launcher/README.md. Super+Ctrl+Shift+Space is a different chord.
 
     # [mac-mapped] Super+Space — Omakase launcher
     cmd-space = 'exec-and-forget /bin/bash -lc "$HOME/.config/omakase/bin/omakase-launch"'
@@ -201,15 +210,17 @@ on-window-detected = [
     # [mac-mapped] Super+Shift+Ctrl+A — pick a local coding agent
     cmd-ctrl-shift-a = 'exec-and-forget /bin/bash -lc "$HOME/.config/omakase/bin/omakase-agent pick"'
 
-    # [mac-mapped] Super+Ctrl+Return — primary local agent
-    cmd-ctrl-enter = 'exec-and-forget /bin/bash -lc "$HOME/.config/omakase/bin/omakase-agent primary"'
+    # [mac-mapped] Option+Enter — primary local agent
+    # Omarchy is Super+Ctrl+Return. Cmd+Enter fights Spotlight / feels wrong;
+    # captain remapped to alt-enter (⌥⏎).
+    alt-enter = 'exec-and-forget /bin/bash -lc "$HOME/.config/omakase/bin/omakase-agent primary"'
 
     # [mac-mapped] Super+Ctrl+L — lock screen
     # Script prefers Control+Command+Q; pmset displaysleepnow is the fallback.
     cmd-ctrl-l = 'exec-and-forget /bin/bash -lc "$HOME/.config/omakase/bin/omakase-lock"'
 
     # [mac-mapped] Super+Ctrl+Shift+Space — cycle Kyoto / Mocha / Ume
-    # Paints SketchyBar, JankyBorders, and Ghostty from one shared palette.
+    # Paints workspace pills, JankyBorders, and Ghostty from one palette.
     # /bin/bash -lc so $HOME expands when AeroSpace launches from the menu extra.
     cmd-ctrl-shift-space = 'exec-and-forget /bin/bash -lc "$HOME/.config/omakase/bin/omakase-theme cycle"'
 

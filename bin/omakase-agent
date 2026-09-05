@@ -2,7 +2,7 @@
 # Focus or launch local coding agents. Omakase is not an AI OS.
 #
 #   omakase-agent pick         Super+Shift+Ctrl+A — menu of what is here
-#   omakase-agent primary      Super+Ctrl+Return — default local agent
+#   omakase-agent primary      Option+Enter — default local agent
 #   omakase-agent list
 #   omakase-agent current
 #   … --print                  print the launch plan; do not exec
@@ -10,7 +10,7 @@
 # Detects apps and CLIs already on this Mac. Never installs. Never
 # talks to a marketplace. Captain override: ~/.config/omakase/agents.conf
 #
-# Super+Shift+Ctrl+A / Super+Ctrl+Return run pick / primary via AeroSpace
+# Super+Shift+Ctrl+A / Option+Enter run pick / primary via AeroSpace
 # exec-and-forget (same /bin/bash -lc path as the theme switcher).
 set -euo pipefail
 

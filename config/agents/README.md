@@ -7,25 +7,29 @@ a launcher store and they do not require a cloud agent host.
 
 Status: **implemented**. Two small scripts, no launchd, no installer.
 
-| Super chord | Script | Action |
+| Chord | Script | Action |
 | --- | --- | --- |
 | `Super+Shift+Ctrl+A` | `omakase-agent pick` | Menu of agents already on this Mac |
-| `Super+Ctrl+Return` | `omakase-agent primary` | Focus or launch the default local agent |
+| `Option+Enter` | `omakase-agent primary` | Focus or launch the default local agent |
 | `Super+Ctrl+L` | `omakase-lock` | Lock the screen |
 
 Theme pick (`Super+Ctrl+Shift+Space`) is the theme switcher, not an agent.
 
+Omarchy’s primary is `Super+Ctrl+Return`. Omakase remaps that to
+**Option+Enter** (`alt-enter`). Cmd+Enter fights Spotlight / feels wrong.
+
 ## Daily chords (section C)
 
-| Super chord | Action | Target |
+| Chord | Action | Target |
 | --- | --- | --- |
 | `Super+Shift+Ctrl+A` | Pick a local agent | osascript list of what is installed or configured |
-| `Super+Ctrl+Return` | Primary agent | Focus or launch your default local agent |
+| `Option+Enter` | Primary agent | Focus or launch your default local agent |
 | `Super+Ctrl+L` | Lock | Control+Command+Q via System Events; `pmset` fallback |
 
 Omarchy analogue: `Super+Shift+Ctrl+A` is “Pick an AI agent”;
-`Super+Ctrl+Return` is Herdr (agent manager). Same muscle memory, local only.
-Omakase does not ship Herdr and does not auto-install an agent.
+`Super+Ctrl+Return` is Herdr (agent manager). Same job, local only,
+Mac chord is Option+Enter. Omakase does not ship Herdr and does not
+auto-install an agent.
 
 ## What is detected (never installed)
 
@@ -76,6 +80,6 @@ cp bin/omakase-agent ~/.config/omakase/bin/omakase-agent
 cp bin/omakase-lock ~/.config/omakase/bin/omakase-lock
 ```
 
-AeroSpace already points Super+Shift+Ctrl+A / Super+Ctrl+Return /
+AeroSpace already points Super+Shift+Ctrl+A / Option+Enter /
 Super+Ctrl+L at those paths (`/bin/bash -lc` so `$HOME` expands). Reload
 the Super map after the copy.

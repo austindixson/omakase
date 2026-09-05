@@ -1,5 +1,5 @@
 #!/bin/bash
-# Switch the one Omakase theme across SketchyBar, JankyBorders, and Ghostty.
+# Switch the one Omakase theme across workspace pills, JankyBorders, and Ghostty.
 #
 #   omakase-theme              cycle Kyoto → Mocha → Ume → Kyoto
 #   omakase-theme cycle        same
