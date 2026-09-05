@@ -3,7 +3,8 @@
 v0 target: **≥80% of the daily set implemented**.
 
 Section A (Navigate) daily binds are **live** in AeroSpace, except
-`Super+Tab` / `Super+Shift+Tab` (deferred — see below). B and C stay stubbed.
+`Super+Tab` / `Super+Shift+Tab` (deferred — see below). Theme pick
+(`Super+Ctrl+Shift+Space`) is live. Other B and C rows stay stubbed.
 
 Status values:
 
@@ -23,9 +24,9 @@ Launching apps, and the agent / lock / theme chords we treat as daily.
 | --- | ---: | ---: | ---: | ---: |
 | A — Navigate | 14 | 0 | 14 | 10 |
 | B — Launch | 8 | 8 | 0 | — |
-| C — Agents & system | 4 | 4 | 0 | 3 |
-| **Daily total** | **26** | **12** | **14** | — |
-| **v0 implemented** | | | **14 / 26 (54%)** | need ≥21 / 26 |
+| C — Agents & system | 4 | 3 | 1 | 3 |
+| **Daily total** | **26** | **11** | **15** | — |
+| **v0 implemented** | | | **15 / 26 (58%)** | need ≥21 / 26 |
 
 Where a Mac bind lives: `config/aerospace/aerospace.toml` unless noted.
 
@@ -106,7 +107,7 @@ chords that keep the desktop coherent.
 | `Super+Shift+Ctrl+A` | Pick a local agent | stubbed | `config/agents/` |
 | `Super+Ctrl+Return` | Primary agent / agent manager | stubbed | Herdr analogue — local only |
 | `Super+Ctrl+L` | Lock | stubbed | `pmset` / lock screen |
-| `Super+Ctrl+Shift+Space` | Pick one of the three themes | stubbed | Paints bar, borders, terminal |
+| `Super+Ctrl+Shift+Space` | Pick one of the three themes | implemented | AeroSpace `exec-and-forget` → `omakase-theme cycle`. Kyoto → Mocha → Ume. Paints SketchyBar, JankyBorders, Ghostty. |
 
 ### C — deferred (not in the 80%)
 

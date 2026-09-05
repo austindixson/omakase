@@ -1,0 +1,12 @@
+# Omakase Ghostty — primary terminal.
+# Colors come from the active theme via `omakase-theme`, which points
+# ~/.config/ghostty/omakase-theme at config/themes/<name>/ghostty.conf.
+# Terminal.app is not painted in this slice.
+#
+# Drop at: ~/.config/ghostty/config
+# Ghostty reloads when this file is touched (the switcher does that).
+
+window-padding-x = 12
+window-padding-y = 10
+macos-titlebar-style = hidden
+config-file = ?omakase-theme

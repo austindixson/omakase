@@ -3,8 +3,9 @@
 # Super = Command (cmd). Same muscle memory as Omarchy / Hyprland.
 # SIP stays on. This file is the window-manager half of the Super map.
 #
-# Section A (Navigate) is live. B (Raycast) and C (agents) stay out of
-# this file. Status tags match docs/bind-parity.md:
+# Section A (Navigate) is live. Theme pick (section C) is live via
+# exec-and-forget. Raycast and agent chords stay out of this file.
+# Status tags match docs/bind-parity.md:
 #
 #   [mac-mapped]  intended for v0 (section A daily)
 #   [deferred]    Hyprland-only layouts, Super clipboard, nested app chords
@@ -16,11 +17,25 @@
 #
 # Raycast owns Super+Space and daily app launches (config/raycast/).
 # Agents own Super+Shift+Ctrl+A and Super+Ctrl+Return (config/agents/).
-# Do not bind those here. Do not bind cmd-c / cmd-x / cmd-v.
+# Theme pick is Super+Ctrl+Shift+Space → bin/omakase-theme cycle.
+# Do not bind Raycast / agent / clipboard chords here.
 
 config-version = 2
 start-at-login = true
-after-startup-command = []
+
+# borders + sketchybar detect an already-running process; safe on reload.
+# https://nikitabobko.github.io/AeroSpace/goodies
+after-startup-command = [
+    'exec-and-forget borders',
+    'exec-and-forget sketchybar',
+]
+
+# Workspace pills on SketchyBar. Does not change section A bind commands.
+exec-on-workspace-change = [
+    '/bin/bash',
+    '-c',
+    'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE',
+]
 
 # Persistent Omarchy-style numbered workspaces plus a scratch workspace.
 # 'scratch' is the Mac stand-in for Hyprland special:scratchpad.
@@ -31,14 +46,14 @@ default-root-container-orientation = 'auto'
 automatically-unhide-macos-hidden-apps = false
 key-mapping.preset = 'qwerty'
 
-# Gaps stay 0. The three themes will set bar / border / terminal chrome
-# later; do not invent a theme pack here.
-gaps.inner.horizontal = 0
-gaps.inner.vertical = 0
-gaps.outer.left = 0
-gaps.outer.bottom = 0
-gaps.outer.top = 0
-gaps.outer.right = 0
+# Chrome for the themed bar + JankyBorders. Not per-theme (one gap set).
+# Top 40 clears the 32px SketchyBar; inner 8 sits next to 5px borders.
+gaps.inner.horizontal = 8
+gaps.inner.vertical = 8
+gaps.outer.left = 8
+gaps.outer.bottom = 8
+gaps.outer.top = 40
+gaps.outer.right = 8
 
 # Native Apple apps stay Mac apps: float so they keep opening natively.
 # Current AeroSpace syntax: if = 'test …' (legacy if.app-* is deprecated).
@@ -159,8 +174,11 @@ on-window-detected = [
     # [mac-mapped] Super+Ctrl+Return — primary agent
     # [mac-mapped] Super+Ctrl+L — lock (may live here later as exec-and-forget)
     # cmd-ctrl-l = 'exec-and-forget pmset displaysleepnow'
-    # [mac-mapped] Super+Ctrl+Shift+Space — pick one of the three themes
-    #              (paints SketchyBar, borders, terminal — not implemented here)
+
+    # [mac-mapped] Super+Ctrl+Shift+Space — cycle Kyoto / Mocha / Ume
+    # Paints SketchyBar, JankyBorders, and Ghostty from one shared palette.
+    # /bin/bash -lc so $HOME expands when AeroSpace launches from the menu extra.
+    cmd-ctrl-shift-space = 'exec-and-forget /bin/bash -lc "$HOME/.config/omakase/bin/omakase-theme cycle"'
 
     # -------------------------------------------------------------------------
     # C — deferred (Super clipboard, nested app chords)

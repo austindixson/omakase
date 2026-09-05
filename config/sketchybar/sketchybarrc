@@ -1,42 +1,87 @@
 #!/bin/bash
-# Omakase SketchyBar stub (FM-OMAKASE-1)
-#
-# Placeholder only. Do not treat this as a bar theme.
-#
-# Locked: SketchyBar is the bar. Three themes will paint:
-#   1. this bar
-#   2. window borders
-#   3. the terminal
-# Theme packs are not part of this scaffold.
+# Omakase SketchyBar — paints from the active theme (Kyoto / Mocha / Ume).
 #
 # Drop at: ~/.config/sketchybar/sketchybarrc
 # Then:    brew services start sketchybar
+# Switch:  omakase-theme cycle   (or Super+Ctrl+Shift+Space)
 #
-# See docs/bind-parity.md section C for Super+Ctrl+Shift+Space (theme pick).
+# Locked: SketchyBar is the bar. No Quickshell clone.
 
-PLUGIN_DIR="${HOME}/.config/sketchybar/plugins"
+CONFIG_DIR="${CONFIG_DIR:-${HOME}/.config/sketchybar}"
+PLUGIN_DIR="${CONFIG_DIR}/plugins"
+
+# shellcheck disable=SC1091
+source "${CONFIG_DIR}/colors.sh"
+
+FONT="SF Pro:Medium:13.0"
+ICON_FONT="SF Pro:Bold:13.0"
 
 sketchybar --bar \
   height=32 \
   position=top \
   sticky=on \
-  padding_left=8 \
-  padding_right=8 \
-  color=0x00000000
+  padding_left=12 \
+  padding_right=12 \
+  color="${BAR_BG:-0xe01a1916}" \
+  blur_radius=24
 
-# Left: workspace hint. Real workspace indicators come later with the Super map.
+sketchybar --default \
+  icon.font="${ICON_FONT}" \
+  icon.color="${BAR_FG:-0xffe7dcc8}" \
+  label.font="${FONT}" \
+  label.color="${BAR_FG:-0xffe7dcc8}" \
+  padding_left=6 \
+  padding_right=6 \
+  background.corner_radius=6 \
+  background.height=22 \
+  background.drawing=off
+
+# Left: wordmark + AeroSpace workspaces (1–4 + scratch).
 sketchybar --add item omakase.mark left \
   --set omakase.mark \
     icon="omakase" \
-    icon.color=0xffaaaaaa \
-    label="bar stub — 3 themes will paint this" \
-    label.color=0xff888888
+    icon.color="${BAR_ACCENT:-0xffc23a2b}" \
+    label.drawing=off \
+    padding_right=10
 
-# Right: clock so the process is visibly alive after `brew services start`.
+sketchybar --add event aerospace_workspace_change
+
+for sid in 1 2 3 4 scratch; do
+  icon="${sid}"
+  if [ "${sid}" = "scratch" ]; then
+    icon="s"
+  fi
+  sketchybar --add item "space.${sid}" left \
+    --subscribe "space.${sid}" aerospace_workspace_change \
+    --set "space.${sid}" \
+      icon="${icon}" \
+      icon.color="${BAR_MUTED:-0xff8a8278}" \
+      background.color="${BAR_SURFACE:-0xff2a2722}" \
+      click_script="aerospace workspace ${sid}" \
+      script="${PLUGIN_DIR}/spaces.sh"
+done
+
+# Center: focused app.
+sketchybar --add item front_app center \
+  --subscribe front_app front_app_switched \
+  --set front_app \
+    icon.drawing=off \
+    label.color="${BAR_FG:-0xffe7dcc8}" \
+    script="${PLUGIN_DIR}/front_app.sh"
+
+# Right: active theme name + clock.
+sketchybar --add item theme right \
+  --set theme \
+    icon.drawing=off \
+    label="${THEME_LABEL:-Kyoto}" \
+    label.color="${BAR_MUTED:-0xff8a8278}" \
+    padding_right=10
+
 sketchybar --add item clock right \
   --set clock \
+    icon.drawing=off \
     update_freq=30 \
-    script="${PLUGIN_DIR}/clock.sh" \
-    label.color=0xffaaaaaa
+    label.color="${BAR_FG:-0xffe7dcc8}" \
+    script="${PLUGIN_DIR}/clock.sh"
 
 sketchybar --update
