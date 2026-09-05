@@ -3,9 +3,8 @@
 # Super = Command (cmd). Same muscle memory as Omarchy / Hyprland.
 # SIP stays on. This file is the window-manager half of the Super map.
 #
-# Section A (Navigate) is live. Theme pick (section C) is live via
-# exec-and-forget. Raycast section B lives in config/raycast/. Agent
-# chords stay out of this file.
+# Section A (Navigate) is live. Section C agent + lock + theme pick
+# are live via exec-and-forget. Raycast section B lives in config/raycast/.
 # Status tags match docs/bind-parity.md:
 #
 #   [mac-mapped]  intended for v0 (section A daily)
@@ -17,9 +16,10 @@
 # Commands:https://nikitabobko.github.io/AeroSpace/commands
 #
 # Raycast owns Super+Space and daily app launches (config/raycast/).
-# Agents own Super+Shift+Ctrl+A and Super+Ctrl+Return (config/agents/).
+# Agents: Super+Shift+Ctrl+A / Super+Ctrl+Return → bin/omakase-agent
+# Lock: Super+Ctrl+L → bin/omakase-lock
 # Theme pick is Super+Ctrl+Shift+Space → bin/omakase-theme cycle.
-# Do not bind Raycast / agent / clipboard chords here.
+# Do not bind Raycast / clipboard chords here.
 
 config-version = 2
 start-at-login = true
@@ -169,13 +169,18 @@ on-window-detected = [
     #              Super+Escape — first-party preset in config/raycast/.
 
     # -------------------------------------------------------------------------
-    # C — Agents (owned by config/agents/)
+    # C — Agents & system (scripts in bin/, notes in config/agents/)
     # -------------------------------------------------------------------------
 
     # [mac-mapped] Super+Shift+Ctrl+A — pick a local coding agent
-    # [mac-mapped] Super+Ctrl+Return — primary agent
-    # [mac-mapped] Super+Ctrl+L — lock (may live here later as exec-and-forget)
-    # cmd-ctrl-l = 'exec-and-forget pmset displaysleepnow'
+    cmd-ctrl-shift-a = 'exec-and-forget /bin/bash -lc "$HOME/.config/omakase/bin/omakase-agent pick"'
+
+    # [mac-mapped] Super+Ctrl+Return — primary local agent
+    cmd-ctrl-enter = 'exec-and-forget /bin/bash -lc "$HOME/.config/omakase/bin/omakase-agent primary"'
+
+    # [mac-mapped] Super+Ctrl+L — lock screen
+    # Script prefers Control+Command+Q; pmset displaysleepnow is the fallback.
+    cmd-ctrl-l = 'exec-and-forget /bin/bash -lc "$HOME/.config/omakase/bin/omakase-lock"'
 
     # [mac-mapped] Super+Ctrl+Shift+Space — cycle Kyoto / Mocha / Ume
     # Paints SketchyBar, JankyBorders, and Ghostty from one shared palette.

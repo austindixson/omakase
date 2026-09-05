@@ -1,0 +1,55 @@
+#!/bin/bash
+# Super+Ctrl+L — lock the screen. SIP stays on.
+#
+# Prefers the macOS lock chord (Control+Command+Q via System Events).
+# Falls back to `pmset displaysleepnow` (the AeroSpace stub) when
+# osascript is missing — that locks if “require password after sleep
+# or screen saver” is on.
+#
+# AeroSpace: exec-and-forget /bin/bash -lc "$HOME/.config/omakase/bin/omakase-lock"
+set -euo pipefail
+
+PRINT=0
+case "${1:-}" in
+  --print|-n) PRINT=1 ;;
+  '' ) ;;
+  *)
+    echo "usage: omakase-lock [--print]" >&2
+    exit 2
+    ;;
+esac
+
+plan() {
+  if command -v osascript >/dev/null 2>&1; then
+    printf '%s\n' "osascript"
+    return 0
+  fi
+  if command -v pmset >/dev/null 2>&1; then
+    printf '%s\n' "pmset"
+    return 0
+  fi
+  return 1
+}
+
+METHOD="$(plan)" || {
+  echo "omakase-lock: need osascript (macOS) or pmset" >&2
+  exit 1
+}
+
+if [ "${PRINT}" = 1 ]; then
+  printf '%s\n' "${METHOD}"
+  exit 0
+fi
+
+case "${METHOD}" in
+  osascript)
+    osascript -e 'tell application "System Events" to keystroke "q" using {control down, command down}'
+    ;;
+  pmset)
+    pmset displaysleepnow
+    ;;
+  *)
+    echo "omakase-lock: unknown method ${METHOD}" >&2
+    exit 1
+    ;;
+esac

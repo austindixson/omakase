@@ -7,8 +7,8 @@ product — not a better tiler than AeroSpace, not an AI OS, not a Hyprland port
 
 This repo is the **FM-OMAKASE-1** Super map: section A (Navigate) is live in
 AeroSpace; three themes paint SketchyBar, JankyBorders, and Ghostty from one
-switch; Raycast section B is a first-party preset. Agent binds stay stubbed.
-Full install automation is still out of scope.
+switch; Raycast section B is a first-party preset; section C agent Super
+binds and lock are live. Full install automation is still out of scope.
 
 ## What this is
 
@@ -135,7 +135,7 @@ mkdir -p ~/.config/aerospace ~/.config/sketchybar/plugins \
          ~/.config/borders ~/.config/ghostty \
          ~/.config/omakase/themes ~/.config/omakase/bin
 
-# Super map (section A Navigate + theme cycle)
+# Super map (section A Navigate + section C agents / lock / theme cycle)
 cp config/aerospace/aerospace.toml ~/.config/aerospace/aerospace.toml
 
 # Bar (reads ~/.config/omakase/current)
@@ -149,12 +149,14 @@ cp config/borders/bordersrc ~/.config/borders/bordersrc
 # Ghostty — primary terminal. Include is ?omakase-theme (set by the switcher).
 cp config/ghostty/config ~/.config/ghostty/config
 
-# Three themes + switcher
+# Three themes + switcher + local agent Super binds
 cp -R config/themes/* ~/.config/omakase/themes/
 cp bin/omakase-theme ~/.config/omakase/bin/omakase-theme
+cp bin/omakase-agent ~/.config/omakase/bin/omakase-agent
+cp bin/omakase-lock ~/.config/omakase/bin/omakase-lock
 
 # Raycast Super+Space + daily app launches: config/raycast/ (checklist)
-# Agents Super binds: see config/agents/
+# Agent catalog + captain override: config/agents/
 ```
 
 Paint Kyoto (creates `~/.config/omakase/current` and the Ghostty include):
@@ -164,9 +166,10 @@ Paint Kyoto (creates `~/.config/omakase/current` and the Ghostty include):
 ```
 
 Reload AeroSpace after every copy (menu extra → Reload config, or
-`aerospace reload-config` once the app is running). Section A chords and
-`Super+Ctrl+Shift+Space` are live in this file; a stale process will keep the
-previous map. Start the bar and borders if AeroSpace has not already:
+`aerospace reload-config` once the app is running). Section A chords,
+section C agent / lock chords, and `Super+Ctrl+Shift+Space` are live in
+this file; a stale process will keep the previous map. Start the bar and
+borders if AeroSpace has not already:
 
 ```bash
 brew services start sketchybar
@@ -206,20 +209,24 @@ Full table and skip rules: [`config/raycast/README.md`](config/raycast/README.md
    new Ghostty window follow.
 4. Super+Space opens Raycast (Spotlight does not). Super+Return opens Ghostty
    or Terminal. Super+Shift+F opens Finder.
-5. Hit the agent Super bind placeholder (`Super+Shift+Ctrl+A`) once agents
-   are wired. Until then, the chord is documented, not live.
+5. `Super+Shift+Ctrl+A` lists local agents already on this Mac (Cursor,
+   Cursor Agent CLI, aider / claude / codex / copilot, plus `extra=`).
+   `Super+Ctrl+Return` focuses or launches the primary (Cursor if present).
+   `Super+Ctrl+L` locks the screen. Nothing is auto-installed.
 
 ## Repo layout
 
 ```
 bin/omakase-theme       Cycle or set Kyoto / Mocha / Ume
-config/aerospace/       Super-key map (section A + theme cycle)
+bin/omakase-agent       Pick / focus a local coding agent
+bin/omakase-lock        Lock screen (Super+Ctrl+L)
+config/aerospace/       Super-key map (A + C agents / lock / theme)
 config/themes/          Shared palettes (theme.sh + ghostty.conf)
 config/sketchybar/      Bar — reads the active theme
 config/borders/         JankyBorders — same palette
 config/ghostty/         Ghostty include for the active theme
 config/raycast/         Super+Space + daily app-launch preset (section B)
-config/agents/          Super binds for local coding agents
+config/agents/          Local agent catalog + captain override
 docs/bind-parity.md     Daily bind checklist (Omarchy A / B / C)
 ```
 
@@ -229,7 +236,8 @@ No `.rayconfig` and no install automation. Raycast is the checklist in
 ## Bind parity
 
 v0 target: **≥80% of the Omarchy daily set** (sections A / B / C).
-Section A + B + theme pick is **23 / 26 (88%)**. Agent rows in C are still stubbed.
+Section A + B + C is **26 / 26 (100%)**. Agent rows detect what is
+already local; they do not install a vendor.
 
 The checklist is [`docs/bind-parity.md`](docs/bind-parity.md). Status is one of
 `stubbed` / `implemented` / `deferred`.
