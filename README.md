@@ -116,7 +116,7 @@ No installer script. Copy by hand, then run the theme switcher once.
 
 Follow the brew “Next steps” it prints (usually adding `brew` to `PATH`).
 
-### 2. Engine, bar, borders, terminal
+### 2. Engine, workspace pills, borders, terminal
 
 ```bash
 brew install --cask nikitabobko/tap/aerospace
@@ -125,8 +125,9 @@ brew install FelixKratz/formulae/borders
 brew install --cask ghostty
 ```
 
-Grant Accessibility to AeroSpace when macOS asks. SketchyBar is a thin
-workspace overlay on the native menu bar — no Screen Recording for v0.
+Grant Accessibility to AeroSpace when macOS asks. SketchyBar is only
+workspace pills on the native menu bar — no Screen Recording, no clock /
+wordmark / theme-name chrome. See [`config/sketchybar/README.md`](config/sketchybar/README.md).
 
 ### 3. Drop in the configs
 
@@ -140,10 +141,13 @@ mkdir -p ~/.config/aerospace ~/.config/sketchybar/plugins \
 # Super map (A Navigate + B launcher + C agents / lock / theme cycle)
 cp config/aerospace/aerospace.toml ~/.config/aerospace/aerospace.toml
 
-# Workspace pills only (reads ~/.config/omakase/current)
+# Workspace pills only (reads ~/.config/omakase/current).
+# Drop stale FM-OMAKASE-1 chrome if a previous copy left it.
+rm -f ~/.config/sketchybar/plugins/clock.sh \
+      ~/.config/sketchybar/plugins/front_app.sh
 cp config/sketchybar/sketchybarrc ~/.config/sketchybar/sketchybarrc
 cp config/sketchybar/colors.sh ~/.config/sketchybar/colors.sh
-cp config/sketchybar/plugins/* ~/.config/sketchybar/plugins/
+cp config/sketchybar/plugins/spaces.sh ~/.config/sketchybar/plugins/spaces.sh
 
 # Borders (JankyBorders)
 cp config/borders/bordersrc ~/.config/borders/bordersrc
@@ -173,8 +177,8 @@ Paint Kyoto (creates `~/.config/omakase/current` and the Ghostty include):
 Reload AeroSpace after every copy (menu extra → Reload config, or
 `aerospace reload-config` once the app is running). Section A chords,
 section C agent / lock chords, and `Super+Ctrl+Shift+Space` are live in
-this file; a stale process will keep the previous map. Start the bar and
-borders if AeroSpace has not already:
+this file; a stale process will keep the previous map. Start the
+workspace overlay and borders if AeroSpace has not already:
 
 ```bash
 brew services start sketchybar
@@ -241,7 +245,7 @@ bin/omakase-lock        Lock screen (Super+Ctrl+L)
 bin/omakase-launch      Super+Space + daily app launches (section B)
 config/aerospace/       Super-key map (A + B launcher + C agents / lock / theme)
 config/themes/          Shared palettes (theme.sh + ghostty.conf)
-config/sketchybar/      Workspace pills in the native menu bar
+config/sketchybar/      Workspace pills only (what install copies)
 config/borders/         JankyBorders — same palette
 config/ghostty/         Ghostty include for the active theme
 config/launcher/        Super+Space contract + launch.conf overrides

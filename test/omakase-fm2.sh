@@ -18,13 +18,20 @@ need_file() {
 need_file "${ROOT}/config/aerospace/aerospace.toml"
 need_file "${ROOT}/config/sketchybar/sketchybarrc"
 need_file "${ROOT}/config/sketchybar/plugins/spaces.sh"
+need_file "${ROOT}/config/sketchybar/README.md"
 need_file "${ROOT}/docs/tiling.md"
 
-if [ -e "${ROOT}/config/sketchybar/plugins/clock.sh" ]; then
-  bad "clock.sh must be gone"
-fi
-if [ -e "${ROOT}/config/sketchybar/plugins/front_app.sh" ]; then
-  bad "front_app.sh must be gone"
+plugin_count=0
+for f in "${ROOT}/config/sketchybar/plugins/"*; do
+  [ -e "$f" ] || continue
+  plugin_count=$((plugin_count + 1))
+  case "$(basename "$f")" in
+    spaces.sh) ;;
+    *) bad "extra sketchybar plugin $(basename "$f")" ;;
+  esac
+done
+if [ "${plugin_count}" -ne 1 ]; then
+  bad "plugins/ must be spaces.sh only (count=${plugin_count})"
 fi
 
 python3 - "${ROOT}/config/aerospace/aerospace.toml" <<'PY'
@@ -121,6 +128,12 @@ done
 
 if ! grep -q 'uncheck' "${ROOT}/README.md"; then
   bad "README must require unchecking Spotlight"
+fi
+if ! grep -q 'rm -f ~/.config/sketchybar/plugins/clock.sh' "${ROOT}/README.md"; then
+  bad "README install must drop stale clock.sh"
+fi
+if ! grep -q 'plugins/spaces.sh' "${ROOT}/README.md"; then
+  bad "README install must copy spaces.sh only"
 fi
 if ! grep -qi 'required' "${ROOT}/config/launcher/README.md"; then
   bad "launcher README must call Spotlight disable required"
