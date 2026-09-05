@@ -149,6 +149,7 @@ The checklist is [`docs/bind-parity.md`](docs/bind-parity.md). Status is one of
 
 Deferred on purpose (not counted against the 80%):
 
+- `Super+Tab` / `Super+Shift+Tab` — keep the macOS app switcher; former workspace is `Super+Ctrl+Tab`
 - Hyprland-only layouts (dwindle / scrolling, pseudo, group tabs)
 - Super clipboard (`Super+C/X/V`) — Command clipboard stays native
 - Nested in-app chords (tmux, Neovim, Ghostty, Compose)

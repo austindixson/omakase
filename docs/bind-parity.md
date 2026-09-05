@@ -53,7 +53,7 @@ float / fullscreen, scratchpad, close.
 | `Super+Shift+Minus` / `Equal` | Resize vertical | implemented | `resize smart-opposite ±50` |
 | `Super+T` | Toggle tile / float | implemented | `layout floating tiling` |
 | `Super+F` | Fullscreen | implemented | Collides with Mac Find — Super map wins |
-| `Super+S` / `Super+Grave` | Toggle scratchpad | implemented | Grave only: `workspace --auto-back-and-forth scratch`. `cmd-s` is Save — not bound. |
+| `Super+S` / `Super+Grave` | Toggle scratchpad | implemented | Grave only: `workspace --auto-back-and-forth scratch`. `cmd-s` is Save — not bound. Steals macOS cycle-windows-of-this-app. |
 | `Super+Alt+S` | Move window to scratchpad | implemented | `move-node-to-workspace scratch` (no follow) |
 | `Super+W` | Close window | implemented | AeroSpace `close`; not app Quit |
 | `Super+Shift+Alt+Arrow` | Move workspace to monitor | implemented | `move-workspace-to-monitor --wrap-around <dir>` |
