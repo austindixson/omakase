@@ -5,9 +5,9 @@ Omarchy for people who will not leave Mac.
 Hyprland muscle memory. Apple apps stay native. Taste and coherence are the
 product — not a better tiler than AeroSpace, not an AI OS, not a Hyprland port.
 
-This repo is the **FM-OMAKASE-1 scaffold**: config stubs, a Super-key map, and
-the bind-parity checklist. Full install automation and theme packs are out of
-scope here.
+This repo is the **FM-OMAKASE-1** Super map: section A (Navigate) is live in
+AeroSpace; Raycast / agents / themes stay stubbed. Full install automation and
+theme packs are out of scope here.
 
 ## What this is
 
@@ -88,14 +88,14 @@ brew install --cask raycast
 Grant Accessibility to AeroSpace when macOS asks. SketchyBar needs Screen
 Recording if you later add a notch/background widget; skip that for the stub.
 
-### 3. Drop in the stubs
+### 3. Drop in the configs
 
 From a clone of this repo:
 
 ```bash
 mkdir -p ~/.config/aerospace ~/.config/sketchybar
 
-# Super map (binds are commented until the map is implemented)
+# Super map (section A Navigate binds are live)
 cp config/aerospace/aerospace.toml ~/.config/aerospace/aerospace.toml
 
 # Bar placeholder — three themes will paint this later
@@ -107,9 +107,11 @@ cp config/sketchybar/plugins/clock.sh ~/.config/sketchybar/plugins/clock.sh
 # Agents Super binds: see config/agents/
 ```
 
-Reload AeroSpace (menu extra → Reload config, or `aerospace reload-config`
-once the app is running). Start SketchyBar with `brew services start sketchybar`
-when you want the bar process up; the stub draws almost nothing.
+Reload AeroSpace after every copy (menu extra → Reload config, or
+`aerospace reload-config` once the app is running). Section A chords are live
+in this file; a stale process will keep the previous map. Start SketchyBar with
+`brew services start sketchybar` when you want the bar process up; the stub
+draws almost nothing.
 
 ### 4. Raycast owns Super+Space
 
@@ -120,7 +122,7 @@ Daily app launches (terminal, browser, files, editor) live in
 
 ### 5. Smoke the v0 path
 
-1. Super binds from the map respond (or are visibly stubbed in the config).
+1. Super section A binds respond (workspace jump, focus, move, float / fullscreen, close).
 2. Open Final Cut Pro (or Photos / QuickTime). It still opens. Native.
 3. Hit the agent Super bind placeholder (`Super+Shift+Ctrl+A`) once agents
    are wired. Until then, the chord is documented, not live.
@@ -128,7 +130,7 @@ Daily app launches (terminal, browser, files, editor) live in
 ## Repo layout
 
 ```
-config/aerospace/   Super-key map stub (Omarchy daily binds, commented)
+config/aerospace/   Super-key map (section A Navigate live; B/C not bound here)
 config/sketchybar/  Bar stub — themes will paint bar / borders / terminal
 config/raycast/     Super+Space + daily app-launch preset stub
 config/agents/      Super binds for local coding agents
@@ -147,6 +149,7 @@ The checklist is [`docs/bind-parity.md`](docs/bind-parity.md). Status is one of
 
 Deferred on purpose (not counted against the 80%):
 
+- `Super+Tab` / `Super+Shift+Tab` — keep the macOS app switcher; former workspace is `Super+Ctrl+Tab`
 - Hyprland-only layouts (dwindle / scrolling, pseudo, group tabs)
 - Super clipboard (`Super+C/X/V`) — Command clipboard stays native
 - Nested in-app chords (tmux, Neovim, Ghostty, Compose)

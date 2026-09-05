@@ -2,7 +2,10 @@
 
 v0 target: **≥80% of the daily set implemented**.
 
-This scaffold **stubs** the map. Status values:
+Section A (Navigate) daily binds are **live** in AeroSpace, except
+`Super+Tab` / `Super+Shift+Tab` (deferred — see below). B and C stay stubbed.
+
+Status values:
 
 | Status | Meaning |
 | --- | --- |
@@ -18,11 +21,11 @@ Launching apps, and the agent / lock / theme chords we treat as daily.
 
 | | Daily rows | Stubbed | Implemented | Deferred (not in %) |
 | --- | ---: | ---: | ---: | ---: |
-| A — Navigate | 16 | 16 | 0 | 8 |
+| A — Navigate | 14 | 0 | 14 | 10 |
 | B — Launch | 8 | 8 | 0 | — |
 | C — Agents & system | 4 | 4 | 0 | 3 |
-| **Daily total** | **28** | **28** | **0** | — |
-| **v0 implemented** | | | **0 / 28 (0%)** | need ≥23 / 28 |
+| **Daily total** | **26** | **12** | **14** | — |
+| **v0 implemented** | | | **14 / 26 (54%)** | need ≥21 / 26 |
 
 Where a Mac bind lives: `config/aerospace/aerospace.toml` unless noted.
 
@@ -40,27 +43,27 @@ float / fullscreen, scratchpad, close.
 
 | Omarchy | Action | Status | Mac note |
 | --- | --- | --- | --- |
-| `Super+1/2/3/4` | Jump to workspace | stubbed | `cmd-1` … `cmd-4` |
-| `Super+Tab` | Next workspace | stubbed | `cmd-tab` is app-switcher — see map comment |
-| `Super+Shift+Tab` | Previous workspace | stubbed | |
-| `Super+Ctrl+Tab` | Former workspace | stubbed | `workspace-back-and-forth` |
-| `Super+Shift+1/2/3/4` | Move window to workspace | stubbed | |
-| `Super+Shift+Alt+1/2/3/4` | Move window, do not follow | stubbed | `--fail-if-noop` / no auto-follow |
-| `Super+Arrow` | Focus in direction | stubbed | |
-| `Super+Shift+Arrow` | Swap / move in direction | stubbed | AeroSpace `move` |
-| `Super+Minus` / `Super+Equal` | Resize horizontal | stubbed | `resize smart` |
-| `Super+Shift+Minus` / `Equal` | Resize vertical | stubbed | |
-| `Super+T` | Toggle tile / float | stubbed | `layout floating tiling` |
-| `Super+F` | Fullscreen | stubbed | Collides with Mac Find — Super map wins |
-| `Super+S` / `Super+Grave` | Toggle scratchpad | stubbed | Prefer Grave; `cmd-s` is Save |
-| `Super+Alt+S` | Move window to scratchpad | stubbed | Dedicated `scratch` workspace |
-| `Super+W` | Close window | stubbed | WM close; in-app `cmd-w` stays native |
-| `Super+Shift+Alt+Arrow` | Move workspace to monitor | stubbed | |
+| `Super+1/2/3/4` | Jump to workspace | implemented | `cmd-1` … `cmd-4` → `workspace N` |
+| `Super+Ctrl+Tab` | Former workspace | implemented | `cmd-ctrl-tab` → `workspace-back-and-forth`. Preferred over stealing the app switcher. |
+| `Super+Shift+1/2/3/4` | Move window to workspace | implemented | `move-node-to-workspace --focus-follows-window N` |
+| `Super+Shift+Alt+1/2/3/4` | Move window, do not follow | implemented | Supported. `move-node-to-workspace N` (AeroSpace default is no-follow; follow is the `--focus-follows-window` flag) |
+| `Super+Arrow` | Focus in direction | implemented | `focus left/down/up/right` |
+| `Super+Shift+Arrow` | Swap / move in direction | implemented | AeroSpace `move` |
+| `Super+Minus` / `Super+Equal` | Resize horizontal | implemented | `resize smart ±50` |
+| `Super+Shift+Minus` / `Equal` | Resize vertical | implemented | `resize smart-opposite ±50` |
+| `Super+T` | Toggle tile / float | implemented | `layout floating tiling` |
+| `Super+F` | Fullscreen | implemented | Collides with Mac Find — Super map wins |
+| `Super+S` / `Super+Grave` | Toggle scratchpad | implemented | Grave only: `workspace --auto-back-and-forth scratch`. `cmd-s` is Save — not bound. Steals macOS cycle-windows-of-this-app. |
+| `Super+Alt+S` | Move window to scratchpad | implemented | `move-node-to-workspace scratch` (no follow) |
+| `Super+W` | Close window | implemented | AeroSpace `close`; not app Quit |
+| `Super+Shift+Alt+Arrow` | Move workspace to monitor | implemented | `move-workspace-to-monitor --wrap-around <dir>` |
 
 ### A — deferred (not in the 80%)
 
 | Omarchy | Why deferred |
 | --- | --- |
+| `Super+Tab` | Next workspace. `cmd-tab` is the macOS app switcher — do not steal it. Sequential walk can land later on a non-colliding chord (e.g. `cmd-ctrl-left` / `cmd-ctrl-right`). Former workspace is `Super+Ctrl+Tab`. |
+| `Super+Shift+Tab` | Previous workspace. Same collision as `cmd-shift-tab` (app switcher reverse). |
 | `Super+L` | Hyprland dwindle ↔ scrolling. AeroSpace has tiles / accordion, not this pair. |
 | `Super+P` | Dwindle pseudo. Hyprland-only. |
 | `Super+J` | Toggle split. Hyprland-only. |
@@ -118,8 +121,11 @@ chords that keep the desktop coherent.
 ## How we count 80%
 
 ```
-implemented daily rows / 28  ≥  0.80
+implemented daily rows / 26  ≥  0.80
 ```
+
+The daily denominator dropped from 28 to 26 when `Super+Tab` / `Super+Shift+Tab`
+moved to deferred (macOS app switcher stays native).
 
 A row moves from `stubbed` to `implemented` when a cold-Mac install makes
 that chord do the documented thing without hand-editing beyond the install
