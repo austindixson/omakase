@@ -4,7 +4,8 @@
 # SIP stays on. This file is the window-manager half of the Super map.
 #
 # Section A (Navigate) is live. Theme pick (section C) is live via
-# exec-and-forget. Raycast and agent chords stay out of this file.
+# exec-and-forget. Raycast section B lives in config/raycast/. Agent
+# chords stay out of this file.
 # Status tags match docs/bind-parity.md:
 #
 #   [mac-mapped]  intended for v0 (section A daily)
@@ -163,8 +164,9 @@ on-window-detected = [
     # -------------------------------------------------------------------------
 
     # [mac-mapped] Super+Space — Raycast. Do not bind cmd-space here.
-    # [mac-mapped] Super+Return, Super+Shift+Return, Super+Shift+F, …
-    #              see config/raycast/
+    # [mac-mapped] Super+Return / Super+Shift+Return / Super+Shift+F /
+    #              Super+Shift+N / Super+Shift+M / Super+Shift+/ /
+    #              Super+Escape — first-party preset in config/raycast/.
 
     # -------------------------------------------------------------------------
     # C — Agents (owned by config/agents/)

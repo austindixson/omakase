@@ -4,7 +4,8 @@ v0 target: **≥80% of the daily set implemented**.
 
 Section A (Navigate) daily binds are **live** in AeroSpace, except
 `Super+Tab` / `Super+Shift+Tab` (deferred — see below). Theme pick
-(`Super+Ctrl+Shift+Space`) is live. Other B and C rows stay stubbed.
+(`Super+Ctrl+Shift+Space`) is live. Section B daily launches are the
+first-party Raycast preset in `config/raycast/`. Agent rows in C stay stubbed.
 
 Status values:
 
@@ -23,12 +24,13 @@ Launching apps, and the agent / lock / theme chords we treat as daily.
 | | Daily rows | Stubbed | Implemented | Deferred (not in %) |
 | --- | ---: | ---: | ---: | ---: |
 | A — Navigate | 14 | 0 | 14 | 10 |
-| B — Launch | 8 | 8 | 0 | — |
+| B — Launch | 8 | 0 | 8 | — |
 | C — Agents & system | 4 | 3 | 1 | 3 |
-| **Daily total** | **26** | **11** | **15** | — |
-| **v0 implemented** | | | **15 / 26 (58%)** | need ≥21 / 26 |
+| **Daily total** | **26** | **3** | **23** | — |
+| **v0 implemented** | | | **23 / 26 (88%)** | need ≥21 / 26 |
 
 Where a Mac bind lives: `config/aerospace/aerospace.toml` unless noted.
+Section B lives in `config/raycast/`.
 
 Legend in the Super map:
 
@@ -79,18 +81,18 @@ float / fullscreen, scratchpad, close.
 ## B — Launch
 
 Omarchy “Launching apps” daily subset plus the launcher. Raycast owns
-`Super+Space` and app launches; see `config/raycast/`.
+`Super+Space` and app launches. Contract + checklist: `config/raycast/`.
 
 | Omarchy | Action | Status | Mac note |
 | --- | --- | --- | --- |
-| `Super+Space` | Launcher | stubbed | Raycast. Disable Spotlight on the same chord. |
-| `Super+Return` | Terminal | stubbed | Terminal.app or Ghostty — your call |
-| `Super+Shift+Return` | Browser | stubbed | Safari or your default |
-| `Super+Shift+F` | Files | stubbed | Finder |
-| `Super+Shift+N` | Editor | stubbed | Your local editor |
-| `Super+Shift+M` | Music | stubbed | Music.app (native) |
-| `Super+Shift+/` | Passwords | stubbed | 1Password if installed |
-| `Super+Escape` | System menu | stubbed | Raycast root / power commands |
+| `Super+Space` | Launcher | implemented | Raycast. Disable Spotlight on the same chord. Contract: `config/raycast/hotkeys.toml`. |
+| `Super+Return` | Terminal | implemented | Ghostty (themes paint it). Terminal.app if Ghostty is absent. |
+| `Super+Shift+Return` | Browser | implemented | Default browser. Safari on a stock Mac. |
+| `Super+Shift+F` | Files | implemented | Finder |
+| `Super+Shift+N` | Editor | implemented | TextEdit default. Override to Cursor / VS Code / Zed / Nova. |
+| `Super+Shift+M` | Music | implemented | Music.app (native) |
+| `Super+Shift+/` | Passwords | implemented | 1Password if installed; skip if not. No Store extension. |
+| `Super+Escape` | System menu | implemented | No first-party power-menu UI. Built-in System Actions: Super+Space, then `lock` / `sleep` / `restart`. Optional: bind Super+Escape → Lock Screen. |
 
 Omarchy webapp chords (HEY, Signal, YouTube, Maps, …) are **not** in the
 daily set. Omakase does not ship a Linux webapp farm.
