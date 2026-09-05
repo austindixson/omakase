@@ -3,7 +3,7 @@
 Local coding agents only. Omakase is not an AI OS.
 
 These Super chords sit next to the AeroSpace map. They do not live in
-Raycast marketplace extensions and they do not require a cloud agent host.
+a launcher store and they do not require a cloud agent host.
 
 Status: **implemented**. Two small scripts, no launchd, no installer.
 
@@ -65,7 +65,7 @@ Cursor CLI notes (do not auto-install):
 - Super clipboard (`Super+C/X/V`) — deferred; Command clipboard stays native
 - Nested in-app agent chords — the agent’s own keymap stays the agent’s
 - Marketplace / “AI OS” launchers
-- Super+Space — Raycast
+- Super+Space — Omakase launcher (section B)
 
 ## Install
 

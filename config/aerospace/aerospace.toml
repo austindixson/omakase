@@ -3,9 +3,10 @@
 # Super = Command (cmd). Same muscle memory as Omarchy / Hyprland.
 # SIP stays on. This file is the window-manager half of the Super map.
 #
-# Section A (Navigate) is live. Section C agent + lock + theme pick
-# are live via exec-and-forget. Raycast section B lives in config/raycast/.
-# Status tags match docs/bind-parity.md:
+# Section A (Navigate) is live. Section B daily launches and Super+Space
+# are live via exec-and-forget → bin/omakase-launch. Section C agent +
+# lock + theme pick are live via exec-and-forget. Status tags match
+# docs/bind-parity.md:
 #
 #   [mac-mapped]  intended for v0 (section A daily)
 #   [deferred]    Hyprland-only layouts, Super clipboard, nested app chords
@@ -15,11 +16,11 @@
 # Docs:    https://nikitabobko.github.io/AeroSpace/guide
 # Commands:https://nikitabobko.github.io/AeroSpace/commands
 #
-# Raycast owns Super+Space and daily app launches (config/raycast/).
+# Launcher: Super+Space + daily app launches → bin/omakase-launch
 # Agents: Super+Shift+Ctrl+A / Super+Ctrl+Return → bin/omakase-agent
 # Lock: Super+Ctrl+L → bin/omakase-lock
 # Theme pick is Super+Ctrl+Shift+Space → bin/omakase-theme cycle.
-# Do not bind Raycast / clipboard chords here.
+# Do not bind clipboard chords here.
 
 config-version = 2
 start-at-login = true
@@ -160,13 +161,38 @@ on-window-detected = [
     # [deferred] Super+Alt+F / Super+Ctrl+F — full-width / tiled-fullscreen.
 
     # -------------------------------------------------------------------------
-    # B — Launch (owned by Raycast, not AeroSpace)
+    # B — Launch (Omakase launcher)
     # -------------------------------------------------------------------------
+    #
+    # Super+Space is cmd-space. AeroSpace owns the chord while this map
+    # is loaded. Spotlight is not rewritten in System Settings. Reclaim:
+    # delete cmd-space and reload, or quit AeroSpace. If Spotlight still
+    # wins, see config/launcher/README.md (contested-chord fallback).
+    # Super+Ctrl+Shift+Space (theme cycle) is a different chord.
 
-    # [mac-mapped] Super+Space — Raycast. Do not bind cmd-space here.
-    # [mac-mapped] Super+Return / Super+Shift+Return / Super+Shift+F /
-    #              Super+Shift+N / Super+Shift+M / Super+Shift+/ /
-    #              Super+Escape — first-party preset in config/raycast/.
+    # [mac-mapped] Super+Space — Omakase launcher
+    cmd-space = 'exec-and-forget /bin/bash -lc "$HOME/.config/omakase/bin/omakase-launch"'
+
+    # [mac-mapped] Super+Return — Ghostty, else Terminal.app
+    cmd-enter = 'exec-and-forget /bin/bash -lc "$HOME/.config/omakase/bin/omakase-launch terminal"'
+
+    # [mac-mapped] Super+Shift+Return — Safari, or browser= in launch.conf
+    cmd-shift-enter = 'exec-and-forget /bin/bash -lc "$HOME/.config/omakase/bin/omakase-launch browser"'
+
+    # [mac-mapped] Super+Shift+F — Finder (cmd-shift-f is Find-in-files in some apps)
+    cmd-shift-f = 'exec-and-forget /bin/bash -lc "$HOME/.config/omakase/bin/omakase-launch files"'
+
+    # [mac-mapped] Super+Shift+N — TextEdit, or editor= in launch.conf
+    cmd-shift-n = 'exec-and-forget /bin/bash -lc "$HOME/.config/omakase/bin/omakase-launch editor"'
+
+    # [mac-mapped] Super+Shift+M — Music.app
+    cmd-shift-m = 'exec-and-forget /bin/bash -lc "$HOME/.config/omakase/bin/omakase-launch music"'
+
+    # [mac-mapped] Super+Shift+/ — 1Password if installed; no-op if not
+    cmd-shift-slash = 'exec-and-forget /bin/bash -lc "$HOME/.config/omakase/bin/omakase-launch passwords"'
+
+    # [mac-mapped] Super+Escape — lock / sleep / restart picker
+    cmd-esc = 'exec-and-forget /bin/bash -lc "$HOME/.config/omakase/bin/omakase-launch system"'
 
     # -------------------------------------------------------------------------
     # C — Agents & system (scripts in bin/, notes in config/agents/)
