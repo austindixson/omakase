@@ -1,5 +1,5 @@
 # Kyoto — temple night. Warm sumi ink, aged paper, vermilion, gold leaf.
-# Shared by SketchyBar, JankyBorders, and Ghostty (see ghostty.conf).
+# Shared by workspace pills, JankyBorders, and Ghostty (see ghostty.conf).
 
 THEME_NAME="kyoto"
 THEME_LABEL="Kyoto"

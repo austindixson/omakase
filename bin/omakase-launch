@@ -13,8 +13,8 @@
 #   omakase-launch lock|sleep|restart
 #   … --print                      print the plan; do not exec
 #
-# Super+Space is bound in AeroSpace (exec-and-forget). Spotlight is not
-# rewritten in System Settings. See config/launcher/README.md.
+# Super+Space is bound in AeroSpace (exec-and-forget). Disable Spotlight’s
+# ⌘Space as a required cold-Mac step. See config/launcher/README.md.
 set -euo pipefail
 
 STATE_DIR="${OMAKASE_STATE:-${HOME}/.config/omakase}"

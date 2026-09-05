@@ -1,6 +1,6 @@
 #!/bin/bash
-# SketchyBar reads the active Omakase theme. Fallback is Kyoto so a copied
-# bar still paints before the first `omakase-theme` run.
+# Workspace pills read the active Omakase theme. Fallback is Kyoto so a
+# copied bar still paints before the first `omakase-theme` run.
 
 _current="${HOME}/.config/omakase/current/theme.sh"
 _kyoto="${HOME}/.config/omakase/themes/kyoto/theme.sh"

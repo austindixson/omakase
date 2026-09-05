@@ -12,22 +12,24 @@ chords live in the AeroSpace Super map, not in a third-party hotkey file.
 Omarchy uses Super+Space. Omakase does the same: AeroSpace binds
 `cmd-space` to `omakase-launch` via `exec-and-forget`.
 
-Spotlight is **not** turned off in System Settings as part of install.
-While this Super map is loaded, AeroSpace owns the chord. That is a
-session bind, not a permanent steal.
+### Required: disable Spotlight’s ⌘Space
 
-### If Spotlight still wins
+This is a cold-Mac step, not an optional fallback. Spotlight and
+AeroSpace cannot share ⌘Space. Leave Spotlight on and Super+Space opens
+Spotlight.
 
-AeroSpace already has Accessibility. If `cmd-space` still opens Spotlight,
-uncheck **System Settings → Keyboard → Keyboard Shortcuts → Spotlight →
-Show Spotlight search**. That is the contested-chord fallback, not the
-default path.
+**System Settings → Keyboard → Keyboard Shortcuts → Spotlight → uncheck
+Show Spotlight search.**
+
+Do that before the first Super+Space. AeroSpace still needs
+Accessibility. Unchecking Spotlight is what makes `cmd-space` →
+`omakase-launch` win reliably.
 
 ### How to reclaim Spotlight
 
-1. Remove the `cmd-space` line from `~/.config/aerospace/aerospace.toml`
+1. Turn **Show Spotlight search** back on.
+2. Remove the `cmd-space` line from `~/.config/aerospace/aerospace.toml`
    and run `aerospace reload-config` (or quit AeroSpace).
-2. If you used the fallback above, turn **Show Spotlight search** back on.
 
 `Super+Ctrl+Shift+Space` (theme cycle) is a different chord. It stays.
 
@@ -52,7 +54,8 @@ three-item system list. Super+Ctrl+L (section C) still locks directly.
 ## Panel
 
 The intended UI is the SwiftUI panel. It reads Kyoto / Mocha / Ume from
-`~/.config/omakase/current/theme.sh` — the same palette as the bar.
+`~/.config/omakase/current/theme.sh` — the same palette as workspace
+pills, borders, and Ghostty.
 
 ```bash
 # one-time, after Xcode Command Line Tools are present
@@ -73,4 +76,4 @@ closes it.
 - A marketplace, store, or paid launcher
 - Omarchy webapp chords (HEY, Signal, YouTube, Maps)
 - A SIP-off path
-- Stealing Spotlight in System Settings as the default install step
+- Leaving Spotlight on ⌘Space and calling Super+Space “contested”

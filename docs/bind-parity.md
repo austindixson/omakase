@@ -33,7 +33,7 @@ Launching apps, and the agent / lock / theme chords we treat as daily.
 
 Where a Mac bind lives: `config/aerospace/aerospace.toml` unless noted.
 Section B verbs live in `bin/omakase-launch`; the Super+Space contract is
-`config/launcher/`.
+`config/launcher/`. Tiling vs Hyprland (SIP-on limits): `docs/tiling.md`.
 
 Legend in the Super map:
 
@@ -89,7 +89,7 @@ Omarchy “Launching apps” daily subset plus the launcher. AeroSpace binds
 
 | Omarchy | Action | Status | Mac note |
 | --- | --- | --- | --- |
-| `Super+Space` | Launcher | implemented | AeroSpace `cmd-space` → `omakase-launch`. SwiftUI panel if built; osascript fallback otherwise. Spotlight is not disabled by default. Reclaim: drop the bind and reload. |
+| `Super+Space` | Launcher | implemented | AeroSpace `cmd-space` → `omakase-launch`. SwiftUI panel if built; osascript fallback otherwise. **Required:** disable Spotlight’s ⌘Space (System Settings → Keyboard → Keyboard Shortcuts → Spotlight → uncheck Show Spotlight search). Reclaim: turn that checkbox back on, drop the bind, reload. |
 | `Super+Return` | Terminal | implemented | AeroSpace → `omakase-launch terminal`. Ghostty (themes paint it). Terminal.app if Ghostty is absent. |
 | `Super+Shift+Return` | Browser | implemented | Safari on a stock Mac. Override with `browser=` in `launch.conf`. |
 | `Super+Shift+F` | Files | implemented | Finder |
@@ -111,9 +111,9 @@ chords that keep the desktop coherent.
 | Omarchy | Action | Status | Mac note |
 | --- | --- | --- | --- |
 | `Super+Shift+Ctrl+A` | Pick a local agent | implemented | AeroSpace `exec-and-forget` → `omakase-agent pick`. osascript menu of Cursor / Cursor Agent CLI / aider / claude / codex / copilot already on this Mac, plus `extra=` rows. Never installs. |
-| `Super+Ctrl+Return` | Primary agent / agent manager | implemented | `omakase-agent primary`. Default is Cursor.app if present, else the first detected local CLI. Override with `~/.config/omakase/agents.conf`. Not Herdr. |
+| `Super+Ctrl+Return` | Primary agent / agent manager | implemented | Remapped to **Option+Enter** (`alt-enter`). Cmd+Enter fights Spotlight / feels wrong. `omakase-agent primary`. Default is Cursor.app if present, else the first detected local CLI. Override with `~/.config/omakase/agents.conf`. Not Herdr. |
 | `Super+Ctrl+L` | Lock | implemented | `omakase-lock`: System Events Control+Command+Q; `pmset displaysleepnow` fallback. |
-| `Super+Ctrl+Shift+Space` | Pick one of the three themes | implemented | AeroSpace `exec-and-forget` → `omakase-theme cycle`. Kyoto → Mocha → Ume. Paints SketchyBar, JankyBorders, Ghostty. |
+| `Super+Ctrl+Shift+Space` | Pick one of the three themes | implemented | AeroSpace `exec-and-forget` → `omakase-theme cycle`. Kyoto → Mocha → Ume. Paints workspace pills, JankyBorders, Ghostty. Bar chrome is workspace-only (see `docs/tiling.md`). |
 
 ### C — deferred (not in the 80%)
 

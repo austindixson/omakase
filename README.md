@@ -5,10 +5,12 @@ Omarchy for people who will not leave Mac.
 Hyprland muscle memory. Apple apps stay native. Taste and coherence are the
 product — not a better tiler than AeroSpace, not an AI OS, not a Hyprland port.
 
-This repo is the **FM-OMAKASE-1** Super map: section A (Navigate) is live in
-AeroSpace; three themes paint SketchyBar, JankyBorders, and Ghostty from one
-switch; section B is the owned Omakase launcher; section C agent Super
-binds and lock are live. Full install automation is still out of scope.
+This repo is the **FM-OMAKASE-1** Super map plus **FM-OMAKASE-2** live-try
+fixes: section A (Navigate) is live in AeroSpace; three themes paint
+workspace pills, JankyBorders, and Ghostty from one switch; section B is
+the owned Omakase launcher; section C agent primary is **Option+Enter**.
+The bar is workspace-only in the native menu bar. Full install automation
+is still out of scope.
 
 ## What this is
 
@@ -16,7 +18,7 @@ A locked macOS desktop that feels like Omarchy without leaving Apple’s apps.
 
 - Super (Command) is the window-manager key, same muscle memory as Hyprland.
 - Final Cut, Logic, Photos, and the rest keep opening as normal Mac apps.
-- One launcher, one bar, three themes, one Super map.
+- One launcher, workspace pills in the Mac menu bar, three themes, one Super map.
 
 ## What this is not
 
@@ -30,10 +32,10 @@ A locked macOS desktop that feels like Omarchy without leaving Apple’s apps.
 | --- | --- |
 | Engine | [AeroSpace](https://github.com/nikitabobko/AeroSpace) with **SIP on** |
 | Launcher | Omakase launcher — local, owned, no store |
-| Bar | [SketchyBar](https://github.com/FelixKratz/SketchyBar) |
+| Bar | [SketchyBar](https://github.com/FelixKratz/SketchyBar) workspace pills in the native menu bar. No clock / battery / wordmark / theme-name chrome. |
 | Borders | [JankyBorders](https://github.com/FelixKratz/JankyBorders) (SIP on; AeroSpace has no border color) |
 | Terminal | [Ghostty](https://ghostty.org) — primary. Terminal.app is not painted. |
-| Themes | Three. Each paints bar, borders, and terminal. |
+| Themes | Three. Each paints workspace pills, borders, and terminal. |
 | Modifier | Super = Command. Omarchy daily binds, Mac-mapped. |
 | Agents | Super binds for local coding agents you already run |
 
@@ -43,7 +45,7 @@ These are explicit. Do not “just add” them.
 
 - **Replace the macOS window server.** AeroSpace tiles on top of it. Period.
 - **yabai / SIP-off as the default.** SIP stays on. No scripting SIP disable.
-- **Full Quickshell clone.** SketchyBar is the bar. No Linux shell rewrite.
+- **Full Quickshell clone.** Workspace pills in the Mac menu bar. No Linux shell rewrite. No Omarchy-style status bar.
 - **Dual-boot / Asahi.** This is macOS. Stay on macOS.
 - **A third-party or paid launcher.** Super+Space is the launcher in this repo.
 
@@ -65,9 +67,10 @@ csrutil status
 
 ## Three themes
 
-One switch paints three surfaces: SketchyBar, JankyBorders, Ghostty. Palettes
-live in `config/themes/<name>/theme.sh` (bar + borders) and `ghostty.conf`
-(same hex). Default is **Kyoto**.
+One switch paints three surfaces: workspace pills, JankyBorders, Ghostty.
+Palettes live in `config/themes/<name>/theme.sh` (pills + borders) and
+`ghostty.conf` (same hex). Default is **Kyoto**. The bar does not show
+the theme name — pills change color; borders and Ghostty do the rest.
 
 | Name | Look |
 | --- | --- |
@@ -82,8 +85,8 @@ omakase-theme list
 omakase-theme current
 ```
 
-`Super+Ctrl+Shift+Space` runs `omakase-theme cycle` from AeroSpace. The bar
-shows the theme name on the right so the chord is visible.
+`Super+Ctrl+Shift+Space` runs `omakase-theme cycle` from AeroSpace. Pills,
+borders, and a new Ghostty window follow. There is no theme-name widget.
 
 Ghostty is the primary terminal. The switcher points
 `~/.config/ghostty/omakase-theme` at the active `ghostty.conf` and touches
@@ -122,8 +125,8 @@ brew install FelixKratz/formulae/borders
 brew install --cask ghostty
 ```
 
-Grant Accessibility to AeroSpace when macOS asks. SketchyBar needs Screen
-Recording if you later add a notch/background widget; skip that for v0.
+Grant Accessibility to AeroSpace when macOS asks. SketchyBar is a thin
+workspace overlay on the native menu bar — no Screen Recording for v0.
 
 ### 3. Drop in the configs
 
@@ -137,7 +140,7 @@ mkdir -p ~/.config/aerospace ~/.config/sketchybar/plugins \
 # Super map (A Navigate + B launcher + C agents / lock / theme cycle)
 cp config/aerospace/aerospace.toml ~/.config/aerospace/aerospace.toml
 
-# Bar (reads ~/.config/omakase/current)
+# Workspace pills only (reads ~/.config/omakase/current)
 cp config/sketchybar/sketchybarrc ~/.config/sketchybar/sketchybarrc
 cp config/sketchybar/colors.sh ~/.config/sketchybar/colors.sh
 cp config/sketchybar/plugins/* ~/.config/sketchybar/plugins/
@@ -178,13 +181,23 @@ brew services start sketchybar
 brew services start borders
 ```
 
-### 4. Super+Space is the Omakase launcher (section B)
+### 4. Disable Spotlight’s ⌘Space (required)
+
+Super+Space is the Omakase launcher. Spotlight and AeroSpace cannot share
+⌘Space. This is a required cold-Mac step, not a contested fallback.
+
+**System Settings → Keyboard → Keyboard Shortcuts → Spotlight → uncheck
+Show Spotlight search.**
+
+Do this before the first Super+Space. To reclaim Spotlight later: turn
+that checkbox back on, remove `cmd-space` from `aerospace.toml`, and
+reload (or quit AeroSpace). Full contract:
+[`config/launcher/README.md`](config/launcher/README.md).
+
+### 5. Super+Space is the Omakase launcher (section B)
 
 AeroSpace binds `cmd-space` to `omakase-launch`. That is the Omarchy
-chord. Spotlight is **not** turned off in System Settings. While the Super
-map is loaded, AeroSpace owns Super+Space. To reclaim Spotlight: remove
-`cmd-space` from `aerospace.toml` and reload (or quit AeroSpace). If
-Spotlight still wins, see [`config/launcher/README.md`](config/launcher/README.md).
+chord. It wins only after step 4.
 
 Daily launches are the same file:
 
@@ -206,17 +219,17 @@ still work.
 
 Full table: [`config/launcher/README.md`](config/launcher/README.md).
 
-### 5. Smoke the v0 path
+### 6. Smoke the v0 path
 
-1. Super section A binds respond (workspace jump, focus, move, float / fullscreen, close).
+1. Super section A binds respond (workspace jump, focus, move, float / fullscreen, close). New windows tile; only Final Cut / Logic / Photos / QuickTime float.
 2. Open Final Cut Pro (or Photos / QuickTime). It still opens. Native.
-3. `Super+Ctrl+Shift+Space` cycles Kyoto → Mocha → Ume. Bar, borders, and a
-   new Ghostty window follow.
-4. Super+Space opens the Omakase launcher. Super+Return opens Ghostty
-   or Terminal. Super+Shift+F opens Finder.
+3. `Super+Ctrl+Shift+Space` cycles Kyoto → Mocha → Ume. Workspace pills,
+   borders, and a new Ghostty window follow. No clock / wordmark / theme name.
+4. Super+Space opens the Omakase launcher (not Spotlight). Super+Return
+   opens Ghostty or Terminal. Super+Shift+F opens Finder.
 5. `Super+Shift+Ctrl+A` lists local agents already on this Mac (Cursor,
    Cursor Agent CLI, aider / claude / codex / copilot, plus `extra=`).
-   `Super+Ctrl+Return` focuses or launches the primary (Cursor if present).
+   `Option+Enter` focuses or launches the primary (Cursor if present).
    `Super+Ctrl+L` locks the screen. Nothing is auto-installed.
 
 ## Repo layout
@@ -228,13 +241,14 @@ bin/omakase-lock        Lock screen (Super+Ctrl+L)
 bin/omakase-launch      Super+Space + daily app launches (section B)
 config/aerospace/       Super-key map (A + B launcher + C agents / lock / theme)
 config/themes/          Shared palettes (theme.sh + ghostty.conf)
-config/sketchybar/      Bar — reads the active theme
+config/sketchybar/      Workspace pills in the native menu bar
 config/borders/         JankyBorders — same palette
 config/ghostty/         Ghostty include for the active theme
 config/launcher/        Super+Space contract + launch.conf overrides
 src/launcher/           SwiftUI panel (optional build; osascript fallback)
 config/agents/          Local agent catalog + captain override
 docs/bind-parity.md     Daily bind checklist (Omarchy A / B / C)
+docs/tiling.md          SIP-on AeroSpace vs Hyprland (honest limits)
 ```
 
 No install automation. The launcher is `bin/omakase-launch` plus, when
@@ -252,7 +266,7 @@ The checklist is [`docs/bind-parity.md`](docs/bind-parity.md). Status is one of
 Deferred on purpose (not counted against the 80%):
 
 - `Super+Tab` / `Super+Shift+Tab` — keep the macOS app switcher; former workspace is `Super+Ctrl+Tab`
-- Hyprland-only layouts (dwindle / scrolling, pseudo, group tabs)
+- Hyprland-only layouts (dwindle / scrolling, pseudo, group tabs) — see [`docs/tiling.md`](docs/tiling.md)
 - Super clipboard (`Super+C/X/V`) — Command clipboard stays native
 - Nested in-app chords (tmux, Neovim, Ghostty, Compose)
 

@@ -1,5 +1,5 @@
 # Mocha — warm dusk latte. Mauve, peach, steel. Catppuccin-adjacent, not a copy.
-# Shared by SketchyBar, JankyBorders, and Ghostty (see ghostty.conf).
+# Shared by workspace pills, JankyBorders, and Ghostty (see ghostty.conf).
 
 THEME_NAME="mocha"
 THEME_LABEL="Mocha"

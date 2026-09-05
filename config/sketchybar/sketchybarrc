@@ -1,11 +1,15 @@
 #!/bin/bash
-# Omakase SketchyBar — paints from the active theme (Kyoto / Mocha / Ume).
+# Omakase workspace indicator — native Mac menu bar only.
+#
+# Workspaces (1–4 + scratch). No clock, battery, weather, wordmark,
+# front app, or theme name. Apple already owns clock / battery.
+# Themes still color the pills; they paint borders + Ghostty separately.
 #
 # Drop at: ~/.config/sketchybar/sketchybarrc
 # Then:    brew services start sketchybar
 # Switch:  omakase-theme cycle   (or Super+Ctrl+Shift+Space)
 #
-# Locked: SketchyBar is the bar. No Quickshell clone.
+# Locked: workspace-only overlay. No Quickshell clone. No Omarchy chrome.
 
 CONFIG_DIR="${CONFIG_DIR:-${HOME}/.config/sketchybar}"
 PLUGIN_DIR="${CONFIG_DIR}/plugins"
@@ -13,36 +17,30 @@ PLUGIN_DIR="${CONFIG_DIR}/plugins"
 # shellcheck disable=SC1091
 source "${CONFIG_DIR}/colors.sh"
 
-FONT="SF Pro:Medium:13.0"
-ICON_FONT="SF Pro:Bold:13.0"
+FONT="SF Pro:Bold:12.0"
 
+# Transparent strip over the native 24px menu bar. No blur, no chrome.
 sketchybar --bar \
-  height=32 \
+  height=24 \
   position=top \
   sticky=on \
-  padding_left=12 \
-  padding_right=12 \
-  color="${BAR_BG:-0xe01a1916}" \
-  blur_radius=24
+  padding_left=8 \
+  padding_right=8 \
+  color=0x00000000 \
+  border_color=0x00000000 \
+  blur_radius=0 \
+  shadow=off \
+  y_offset=0
 
 sketchybar --default \
-  icon.font="${ICON_FONT}" \
-  icon.color="${BAR_FG:-0xffe7dcc8}" \
-  label.font="${FONT}" \
-  label.color="${BAR_FG:-0xffe7dcc8}" \
-  padding_left=6 \
-  padding_right=6 \
-  background.corner_radius=6 \
-  background.height=22 \
+  icon.font="${FONT}" \
+  icon.color="${BAR_MUTED:-0xff8a8278}" \
+  label.drawing=off \
+  padding_left=4 \
+  padding_right=4 \
+  background.corner_radius=4 \
+  background.height=16 \
   background.drawing=off
-
-# Left: wordmark + AeroSpace workspaces (1–4 + scratch).
-sketchybar --add item omakase.mark left \
-  --set omakase.mark \
-    icon="omakase" \
-    icon.color="${BAR_ACCENT:-0xffc23a2b}" \
-    label.drawing=off \
-    padding_right=10
 
 sketchybar --add event aerospace_workspace_change
 
@@ -60,28 +58,5 @@ for sid in 1 2 3 4 scratch; do
       click_script="aerospace workspace ${sid}" \
       script="${PLUGIN_DIR}/spaces.sh"
 done
-
-# Center: focused app.
-sketchybar --add item front_app center \
-  --subscribe front_app front_app_switched \
-  --set front_app \
-    icon.drawing=off \
-    label.color="${BAR_FG:-0xffe7dcc8}" \
-    script="${PLUGIN_DIR}/front_app.sh"
-
-# Right: active theme name + clock.
-sketchybar --add item theme right \
-  --set theme \
-    icon.drawing=off \
-    label="${THEME_LABEL:-Kyoto}" \
-    label.color="${BAR_MUTED:-0xff8a8278}" \
-    padding_right=10
-
-sketchybar --add item clock right \
-  --set clock \
-    icon.drawing=off \
-    update_freq=30 \
-    label.color="${BAR_FG:-0xffe7dcc8}" \
-    script="${PLUGIN_DIR}/clock.sh"
 
 sketchybar --update
