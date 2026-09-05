@@ -5,15 +5,16 @@ v0 target: **≥80% of the daily set implemented**.
 Section A (Navigate) daily binds are **live** in AeroSpace, except
 `Super+Tab` / `Super+Shift+Tab` (deferred — see below). Theme pick
 (`Super+Ctrl+Shift+Space`) is live. Section B daily launches are the
-first-party Raycast preset in `config/raycast/`. Section C agent Super
-binds and lock are live via `bin/omakase-agent` and `bin/omakase-lock`.
+Omakase launcher in `bin/omakase-launch` (Super map + panel). Section C
+agent Super binds and lock are live via `bin/omakase-agent` and
+`bin/omakase-lock`.
 
 Status values:
 
 | Status | Meaning |
 | --- | --- |
 | `stubbed` | Documented and commented in the Super map. Not live yet. |
-| `implemented` | Live in AeroSpace, Raycast, or the agent stub. |
+| `implemented` | Live in AeroSpace, the Omakase launcher, or the agent stub. |
 | `deferred` | Out of the v0 daily set. Not counted in the 80%. |
 
 **Daily set** = sections A + B + C below. Count a row once even when the
@@ -31,11 +32,12 @@ Launching apps, and the agent / lock / theme chords we treat as daily.
 | **v0 implemented** | | | **26 / 26 (100%)** | need ≥21 / 26 |
 
 Where a Mac bind lives: `config/aerospace/aerospace.toml` unless noted.
-Section B lives in `config/raycast/`.
+Section B verbs live in `bin/omakase-launch`; the Super+Space contract is
+`config/launcher/`.
 
 Legend in the Super map:
 
-- `[mac-mapped]` — intended for v0 on AeroSpace / Raycast / agents
+- `[mac-mapped]` — intended for v0 on AeroSpace / launcher / agents
 - `[deferred]` — Hyprland-only, Super clipboard, or nested app chords
 
 ---
@@ -81,19 +83,20 @@ float / fullscreen, scratchpad, close.
 
 ## B — Launch
 
-Omarchy “Launching apps” daily subset plus the launcher. Raycast owns
-`Super+Space` and app launches. Contract + checklist: `config/raycast/`.
+Omarchy “Launching apps” daily subset plus the launcher. AeroSpace binds
+`Super+Space` and the daily chords to `omakase-launch`. Contract:
+`config/launcher/`.
 
 | Omarchy | Action | Status | Mac note |
 | --- | --- | --- | --- |
-| `Super+Space` | Launcher | implemented | Raycast. Disable Spotlight on the same chord. Contract: `config/raycast/hotkeys.toml`. |
-| `Super+Return` | Terminal | implemented | Ghostty (themes paint it). Terminal.app if Ghostty is absent. |
-| `Super+Shift+Return` | Browser | implemented | Default browser. Safari on a stock Mac. |
+| `Super+Space` | Launcher | implemented | AeroSpace `cmd-space` → `omakase-launch`. SwiftUI panel if built; osascript fallback otherwise. Spotlight is not disabled by default. Reclaim: drop the bind and reload. |
+| `Super+Return` | Terminal | implemented | AeroSpace → `omakase-launch terminal`. Ghostty (themes paint it). Terminal.app if Ghostty is absent. |
+| `Super+Shift+Return` | Browser | implemented | Safari on a stock Mac. Override with `browser=` in `launch.conf`. |
 | `Super+Shift+F` | Files | implemented | Finder |
-| `Super+Shift+N` | Editor | implemented | TextEdit default. Override to Cursor / VS Code / Zed / Nova. |
+| `Super+Shift+N` | Editor | implemented | TextEdit default. Override with `editor=` (Cursor / VS Code / Zed / Nova). |
 | `Super+Shift+M` | Music | implemented | Music.app (native) |
-| `Super+Shift+/` | Passwords | implemented | 1Password if installed; skip if not. No Store extension. |
-| `Super+Escape` | System menu | implemented | No first-party power-menu UI. Built-in System Actions: Super+Space, then `lock` / `sleep` / `restart`. Optional: bind Super+Escape → Lock Screen. |
+| `Super+Shift+/` | Passwords | implemented | 1Password if installed; skip if not. No store substitute. |
+| `Super+Escape` | System menu | implemented | `omakase-launch system`: Lock / Sleep / Restart. Same verbs from Super+Space. Super+Ctrl+L still locks directly. |
 
 Omarchy webapp chords (HEY, Signal, YouTube, Maps, …) are **not** in the
 daily set. Omakase does not ship a Linux webapp farm.

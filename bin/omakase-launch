@@ -1,0 +1,484 @@
+#!/bin/bash
+# Omakase launcher — section B. Local, owned, no marketplace.
+#
+#   omakase-launch                 Super+Space — open the launcher
+#   omakase-launch ui
+#   omakase-launch system          Super+Escape — lock / sleep / restart
+#   omakase-launch terminal        Super+Return
+#   omakase-launch browser         Super+Shift+Return
+#   omakase-launch files           Super+Shift+F
+#   omakase-launch editor          Super+Shift+N
+#   omakase-launch music           Super+Shift+M
+#   omakase-launch passwords       Super+Shift+/
+#   omakase-launch lock|sleep|restart
+#   … --print                      print the plan; do not exec
+#
+# Super+Space is bound in AeroSpace (exec-and-forget). Spotlight is not
+# rewritten in System Settings. See config/launcher/README.md.
+set -euo pipefail
+
+STATE_DIR="${OMAKASE_STATE:-${HOME}/.config/omakase}"
+CONF="${STATE_DIR}/launch.conf"
+SELF="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
+
+PRINT=0
+EDITOR_NAME="TextEdit"
+BROWSER_NAME="Safari"
+CMD=""
+
+usage() {
+  echo "usage: omakase-launch [ui|system|terminal|browser|files|editor|music|passwords|lock|sleep|restart] [--print]" >&2
+  exit 2
+}
+
+load_conf() {
+  [ -f "${CONF}" ] || return 0
+  local line key val
+  while IFS= read -r line || [ -n "${line}" ]; do
+    case "${line}" in
+      ''|'#'*) continue ;;
+    esac
+    key="${line%%=*}"
+    val="${line#*=}"
+    case "${key}" in
+      editor) EDITOR_NAME="${val}" ;;
+      browser) BROWSER_NAME="${val}" ;;
+      *) echo "omakase-launch: unknown launch.conf key: ${key}" >&2 ;;
+    esac
+  done < "${CONF}"
+}
+
+app_exists() {
+  local name="$1"
+  local roots=("/Applications" "/System/Applications" "/System/Applications/Utilities" "${HOME}/Applications")
+  local root
+  [ -n "${OMAKASE_APP_ROOT:-}" ] && roots+=("${OMAKASE_APP_ROOT}")
+  for root in "${roots[@]}"; do
+    [ -d "${root}/${name}.app" ] && return 0
+  done
+  return 1
+}
+
+first_existing_app() {
+  local name
+  for name in "$@"; do
+    if app_exists "${name}"; then
+      printf '%s\n' "${name}"
+      return 0
+    fi
+  done
+  return 1
+}
+
+plan_terminal() {
+  first_existing_app Ghostty Terminal || printf '%s\n' Terminal
+}
+
+plan_browser() {
+  first_existing_app "${BROWSER_NAME}" Safari || printf '%s\n' Safari
+}
+
+plan_editor() {
+  first_existing_app "${EDITOR_NAME}" TextEdit || printf '%s\n' TextEdit
+}
+
+plan_passwords() {
+  first_existing_app 1Password || return 1
+}
+
+lock_bin() {
+  local candidates=(
+    "${STATE_DIR}/bin/omakase-lock"
+    "$(cd "$(dirname "$0")" && pwd)/omakase-lock"
+  )
+  local path
+  for path in "${candidates[@]}"; do
+    if [ -x "${path}" ]; then
+      printf '%s\n' "${path}"
+      return 0
+    fi
+  done
+  return 1
+}
+
+open_app() {
+  local name="$1"
+  if [ "$(uname -s)" = Darwin ] && command -v open >/dev/null 2>&1; then
+    open -a "${name}"
+    return 0
+  fi
+  echo "omakase-launch: need macOS open(1); would launch ${name}" >&2
+  exit 1
+}
+
+run_or_print() {
+  local kind="$1"
+  local target="$2"
+  if [ "${PRINT}" = 1 ]; then
+    printf '%s\t%s\n' "${kind}" "${target}"
+    return 0
+  fi
+  case "${kind}" in
+    app) open_app "${target}" ;;
+    skip) return 0 ;;
+    *)
+      echo "omakase-launch: unknown plan ${kind}" >&2
+      exit 1
+      ;;
+  esac
+}
+
+cmd_terminal() { run_or_print app "$(plan_terminal)"; }
+cmd_browser() { run_or_print app "$(plan_browser)"; }
+cmd_files() { run_or_print app Finder; }
+cmd_editor() { run_or_print app "$(plan_editor)"; }
+cmd_music() { run_or_print app Music; }
+
+cmd_passwords() {
+  local name
+  if name="$(plan_passwords)"; then
+    run_or_print app "${name}"
+    return 0
+  fi
+  if [ "${PRINT}" = 1 ]; then
+    printf '%s\t%s\n' skip 1Password
+    return 0
+  fi
+  echo "omakase-launch: 1Password is not installed; skip Super+Shift+/" >&2
+}
+
+cmd_lock() {
+  local bin
+  if ! bin="$(lock_bin)"; then
+    echo "omakase-launch: omakase-lock not found" >&2
+    exit 1
+  fi
+  if [ "${PRINT}" = 1 ]; then
+    printf '%s\t%s\n' lock "${bin}"
+    return 0
+  fi
+  exec "${bin}"
+}
+
+cmd_sleep() {
+  if [ "${PRINT}" = 1 ]; then
+    printf '%s\t%s\n' sleep pmset
+    return 0
+  fi
+  if command -v pmset >/dev/null 2>&1; then
+    pmset sleepnow
+    return 0
+  fi
+  echo "omakase-launch: need pmset to sleep" >&2
+  exit 1
+}
+
+cmd_restart() {
+  if [ "${PRINT}" = 1 ]; then
+    printf '%s\t%s\n' restart osascript
+    return 0
+  fi
+  if command -v osascript >/dev/null 2>&1; then
+    osascript -e 'tell application "System Events" to restart'
+    return 0
+  fi
+  echo "omakase-launch: need osascript to restart" >&2
+  exit 1
+}
+
+swift_bin() {
+  local candidates=(
+    "${STATE_DIR}/libexec/OmakaseLauncher"
+    "$(cd "$(dirname "$0")" && pwd)/../src/launcher/.build/release/OmakaseLauncher"
+    "$(cd "$(dirname "$0")" && pwd)/../src/launcher/.build/debug/OmakaseLauncher"
+  )
+  local path
+  for path in "${candidates[@]}"; do
+    if [ -x "${path}" ]; then
+      printf '%s\n' "${path}"
+      return 0
+    fi
+  done
+  return 1
+}
+
+ui_backend() {
+  case "${OMAKASE_LAUNCHER:-}" in
+    swift|osascript)
+      printf '%s\n' "${OMAKASE_LAUNCHER}"
+      return 0
+      ;;
+  esac
+  if [ "$(uname -s)" = Darwin ] && swift_bin >/dev/null; then
+    printf '%s\n' swift
+    return 0
+  fi
+  printf '%s\n' osascript
+}
+
+toggle_swift() {
+  if command -v pgrep >/dev/null 2>&1 && pgrep -x OmakaseLauncher >/dev/null 2>&1; then
+    pkill -x OmakaseLauncher || true
+    return 0
+  fi
+  return 1
+}
+
+run_swift_ui() {
+  local mode="$1"
+  local bin
+  bin="$(swift_bin)" || return 1
+  if [ "${mode}" = launch ] && toggle_swift; then
+    return 0
+  fi
+  OMAKASE_LAUNCH="${SELF}" OMAKASE_STATE="${STATE_DIR}" exec "${bin}" --mode "${mode}"
+}
+
+system_labels() {
+  printf '%s\n' "Lock Screen" Sleep Restart
+}
+
+pick_system() {
+  local want="${OMAKASE_SYSTEM_PICK:-}"
+  case "${want}" in
+    lock|sleep|restart)
+      printf '%s\n' "${want}"
+      return 0
+      ;;
+    '') ;;
+    *)
+      echo "omakase-launch: OMAKASE_SYSTEM_PICK=${want} must be lock, sleep, or restart" >&2
+      exit 1
+      ;;
+  esac
+  return 1
+}
+
+osascript_choose() {
+  local prompt="$1"
+  shift
+  local labels="" item
+  for item in "$@"; do
+    if [ -z "${labels}" ]; then
+      labels="\"${item}\""
+    else
+      labels="${labels}, \"${item}\""
+    fi
+  done
+  osascript -e "choose from list {${labels}} with prompt \"${prompt}\" OK button name \"Open\" cancel button name \"Cancel\" with title \"Omakase\"" || true
+}
+
+fallback_system() {
+  local picked result
+  if picked="$(pick_system)"; then
+    "cmd_${picked}"
+    return 0
+  fi
+  if ! command -v osascript >/dev/null 2>&1; then
+    echo "omakase-launch: no picker UI (need the Swift launcher or osascript)" >&2
+    echo "set OMAKASE_SYSTEM_PICK=lock|sleep|restart or run on a Mac" >&2
+    exit 1
+  fi
+  result="$(osascript_choose "Lock, sleep, or restart" "Lock Screen" Sleep Restart)"
+  case "${result}" in
+    false|'') exit 0 ;;
+    "Lock Screen") cmd_lock ;;
+    Sleep) cmd_sleep ;;
+    Restart) cmd_restart ;;
+    *)
+      echo "omakase-launch: unknown system pick ${result}" >&2
+      exit 1
+      ;;
+  esac
+}
+
+daily_labels() {
+  printf '%s\n' Terminal Browser Finder Editor Music
+  if plan_passwords >/dev/null; then
+    printf '%s\n' Passwords
+  fi
+  system_labels
+}
+
+run_daily_label() {
+  case "$1" in
+    Terminal) cmd_terminal ;;
+    Browser) cmd_browser ;;
+    Finder) cmd_files ;;
+    Editor) cmd_editor ;;
+    Music) cmd_music ;;
+    Passwords) cmd_passwords ;;
+    "Lock Screen") cmd_lock ;;
+    Sleep) cmd_sleep ;;
+    Restart) cmd_restart ;;
+    *) return 1 ;;
+  esac
+}
+
+list_app_names() {
+  local roots=("/Applications" "/System/Applications" "${HOME}/Applications")
+  local root
+  [ -n "${OMAKASE_APP_ROOT:-}" ] && roots+=("${OMAKASE_APP_ROOT}")
+  for root in "${roots[@]}"; do
+    [ -d "${root}" ] || continue
+    find "${root}" -maxdepth 1 -name '*.app' -print 2>/dev/null \
+      | sed 's|.*/||; s|\.app$||'
+  done | sort -u
+}
+
+lower() {
+  printf '%s' "$1" | tr '[:upper:]' '[:lower:]'
+}
+
+first_prefix() {
+  local query="$1" name
+  while IFS= read -r name; do
+    [ -n "${name}" ] || continue
+    case "$(lower "${name}")" in
+      "${query}"*) printf '%s\n' "${name}"; return 0 ;;
+    esac
+  done
+  return 1
+}
+
+first_contains() {
+  local query="$1" name
+  while IFS= read -r name; do
+    [ -n "${name}" ] || continue
+    case "$(lower "${name}")" in
+      *"${query}"*) printf '%s\n' "${name}"; return 0 ;;
+    esac
+  done
+  return 1
+}
+
+match_query() {
+  local query
+  query="$(lower "$1")"
+  first_prefix "${query}" < <(daily_labels; list_app_names) && return 0
+  first_contains "${query}" < <(daily_labels; list_app_names)
+}
+
+ask_query() {
+  if [ -n "${OMAKASE_LAUNCH_QUERY:-}" ]; then
+    printf '%s\n' "${OMAKASE_LAUNCH_QUERY}"
+    return 0
+  fi
+  if command -v osascript >/dev/null 2>&1; then
+    osascript -e 'set theResult to display dialog "Launch an app, file, or command" default answer "" with title "Omakase" buttons {"Cancel", "Open"} default button "Open"' -e 'text returned of theResult' && return 0
+    return 1
+  fi
+  echo "omakase-launch: no picker UI (need the Swift launcher or osascript)" >&2
+  echo "build src/launcher or set OMAKASE_LAUNCH_QUERY= and run on a Mac" >&2
+  exit 1
+}
+
+open_query() {
+  local name
+  if name="$(match_query "$1")"; then
+    run_daily_label "${name}" && return 0
+    run_or_print app "${name}"
+    return 0
+  fi
+  echo "omakase-launch: nothing matched $1" >&2
+  exit 1
+}
+
+choose_daily() {
+  local labels="" item
+  while IFS= read -r item; do
+    if [ -z "${labels}" ]; then
+      labels="\"${item}\""
+    else
+      labels="${labels}, \"${item}\""
+    fi
+  done < <(daily_labels)
+  osascript -e "choose from list {${labels}} with prompt \"Daily launches\" OK button name \"Open\" cancel button name \"Cancel\" with title \"Omakase\"" || true
+}
+
+fallback_launch() {
+  local query result
+  if ! query="$(ask_query)"; then
+    exit 0
+  fi
+  if [ -n "${query}" ]; then
+    open_query "${query}"
+    return 0
+  fi
+  if ! command -v osascript >/dev/null 2>&1; then
+    echo "omakase-launch: empty query and no osascript list" >&2
+    exit 1
+  fi
+  result="$(choose_daily)"
+  case "${result}" in
+    false|'') exit 0 ;;
+  esac
+  run_daily_label "${result}" || {
+    echo "omakase-launch: unknown pick ${result}" >&2
+    exit 1
+  }
+}
+
+print_ui() {
+  local mode="$1"
+  local backend="$2"
+  local picked
+  if [ "${mode}" = system ]; then
+    if picked="$(pick_system)"; then
+      "cmd_${picked}"
+      return 0
+    fi
+    printf '%s\t%s\n' system lock,sleep,restart
+    return 0
+  fi
+  if [ -n "${OMAKASE_LAUNCH_QUERY:-}" ]; then
+    printf '%s\t%s\n' query "$(match_query "${OMAKASE_LAUNCH_QUERY}" || true)"
+    return 0
+  fi
+  printf '%s\t%s\n' ui "${backend}"
+}
+
+cmd_ui() {
+  local mode="$1"
+  local backend
+  backend="$(ui_backend)"
+  if [ "${PRINT}" = 1 ]; then
+    print_ui "${mode}" "${backend}"
+    return 0
+  fi
+  if [ "${backend}" = swift ] && run_swift_ui "${mode}"; then
+    return 0
+  fi
+  if [ "${mode}" = system ]; then
+    fallback_system
+    return 0
+  fi
+  fallback_launch
+}
+
+for arg in "$@"; do
+  case "${arg}" in
+    --print|-n) PRINT=1 ;;
+    ui|system|terminal|browser|files|editor|music|passwords|lock|sleep|restart) CMD="${arg}" ;;
+    -h|--help) usage ;;
+    *) usage ;;
+  esac
+done
+CMD="${CMD:-ui}"
+
+load_conf
+
+case "${CMD}" in
+  ui) cmd_ui launch ;;
+  system) cmd_ui system ;;
+  terminal) cmd_terminal ;;
+  browser) cmd_browser ;;
+  files) cmd_files ;;
+  editor) cmd_editor ;;
+  music) cmd_music ;;
+  passwords) cmd_passwords ;;
+  lock) cmd_lock ;;
+  sleep) cmd_sleep ;;
+  restart) cmd_restart ;;
+  *) usage ;;
+esac

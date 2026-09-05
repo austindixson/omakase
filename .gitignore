@@ -1,3 +1,6 @@
 .DS_Store
 *.swp
 *~
+.build/
+.swiftpm/
+Package.resolved

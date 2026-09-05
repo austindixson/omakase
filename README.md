@@ -7,7 +7,7 @@ product — not a better tiler than AeroSpace, not an AI OS, not a Hyprland port
 
 This repo is the **FM-OMAKASE-1** Super map: section A (Navigate) is live in
 AeroSpace; three themes paint SketchyBar, JankyBorders, and Ghostty from one
-switch; Raycast section B is a first-party preset; section C agent Super
+switch; section B is the owned Omakase launcher; section C agent Super
 binds and lock are live. Full install automation is still out of scope.
 
 ## What this is
@@ -29,7 +29,7 @@ A locked macOS desktop that feels like Omarchy without leaving Apple’s apps.
 | Piece | Choice |
 | --- | --- |
 | Engine | [AeroSpace](https://github.com/nikitabobko/AeroSpace) with **SIP on** |
-| Launcher | Raycast, via a first-party preset (not the marketplace) |
+| Launcher | Omakase launcher — local, owned, no store |
 | Bar | [SketchyBar](https://github.com/FelixKratz/SketchyBar) |
 | Borders | [JankyBorders](https://github.com/FelixKratz/JankyBorders) (SIP on; AeroSpace has no border color) |
 | Terminal | [Ghostty](https://ghostty.org) — primary. Terminal.app is not painted. |
@@ -45,7 +45,7 @@ These are explicit. Do not “just add” them.
 - **yabai / SIP-off as the default.** SIP stays on. No scripting SIP disable.
 - **Full Quickshell clone.** SketchyBar is the bar. No Linux shell rewrite.
 - **Dual-boot / Asahi.** This is macOS. Stay on macOS.
-- **Raycast marketplace day one.** The preset lives in this repo.
+- **A third-party or paid launcher.** Super+Space is the launcher in this repo.
 
 ## SIP stays on
 
@@ -113,13 +113,12 @@ No installer script. Copy by hand, then run the theme switcher once.
 
 Follow the brew “Next steps” it prints (usually adding `brew` to `PATH`).
 
-### 2. Engine, bar, borders, launcher, terminal
+### 2. Engine, bar, borders, terminal
 
 ```bash
 brew install --cask nikitabobko/tap/aerospace
 brew install FelixKratz/formulae/sketchybar
 brew install FelixKratz/formulae/borders
-brew install --cask raycast
 brew install --cask ghostty
 ```
 
@@ -135,7 +134,7 @@ mkdir -p ~/.config/aerospace ~/.config/sketchybar/plugins \
          ~/.config/borders ~/.config/ghostty \
          ~/.config/omakase/themes ~/.config/omakase/bin
 
-# Super map (section A Navigate + section C agents / lock / theme cycle)
+# Super map (A Navigate + B launcher + C agents / lock / theme cycle)
 cp config/aerospace/aerospace.toml ~/.config/aerospace/aerospace.toml
 
 # Bar (reads ~/.config/omakase/current)
@@ -149,13 +148,16 @@ cp config/borders/bordersrc ~/.config/borders/bordersrc
 # Ghostty — primary terminal. Include is ?omakase-theme (set by the switcher).
 cp config/ghostty/config ~/.config/ghostty/config
 
-# Three themes + switcher + local agent Super binds
+# Three themes + switcher + launcher + local agent Super binds
 cp -R config/themes/* ~/.config/omakase/themes/
 cp bin/omakase-theme ~/.config/omakase/bin/omakase-theme
+cp bin/omakase-launch ~/.config/omakase/bin/omakase-launch
 cp bin/omakase-agent ~/.config/omakase/bin/omakase-agent
 cp bin/omakase-lock ~/.config/omakase/bin/omakase-lock
+cp config/launcher/launch.conf ~/.config/omakase/launch.conf
 
-# Raycast Super+Space + daily app launches: config/raycast/ (checklist)
+# Optional: build the SwiftUI panel (osascript fallback works without it)
+# cp -R src/launcher ~/.config/omakase/launcher
 # Agent catalog + captain override: config/agents/
 ```
 
@@ -176,30 +178,33 @@ brew services start sketchybar
 brew services start borders
 ```
 
-### 4. Raycast owns Super+Space (section B)
+### 4. Super+Space is the Omakase launcher (section B)
 
-The first-party preset is [`config/raycast/`](config/raycast/). No marketplace.
-No `.rayconfig` (encrypted, not durable). Finish this by hand:
+AeroSpace binds `cmd-space` to `omakase-launch`. That is the Omarchy
+chord. Spotlight is **not** turned off in System Settings. While the Super
+map is loaded, AeroSpace owns Super+Space. To reclaim Spotlight: remove
+`cmd-space` from `aerospace.toml` and reload (or quit AeroSpace). If
+Spotlight still wins, see [`config/launcher/README.md`](config/launcher/README.md).
 
-1. Open Raycast → Settings → General → Raycast Hotkey → **Command+Space**.
-2. System Settings → Keyboard → Keyboard Shortcuts → Spotlight → uncheck
-   **Show Spotlight search** (Command+Space).
-3. Settings → Shortcuts → **Applications** — assign the daily launches:
+Daily launches are the same file:
 
-   | Super | Opens |
-   | --- | --- |
-   | `Super+Return` | Ghostty (or Terminal.app if Ghostty is missing) |
-   | `Super+Shift+Return` | Default browser (Safari on a stock Mac) |
-   | `Super+Shift+F` | Finder |
-   | `Super+Shift+N` | TextEdit — change to your editor if you already have one |
-   | `Super+Shift+M` | Music.app |
-   | `Super+Shift+/` | 1Password if installed; skip if not |
+| Super | Opens |
+| --- | --- |
+| `Super+Return` | Ghostty (or Terminal.app if Ghostty is missing) |
+| `Super+Shift+Return` | Safari (or `browser=` in `~/.config/omakase/launch.conf`) |
+| `Super+Shift+F` | Finder |
+| `Super+Shift+N` | TextEdit — set `editor=` if you already have one |
+| `Super+Shift+M` | Music.app |
+| `Super+Shift+/` | 1Password if installed; skip if not |
+| `Super+Escape` | Lock / Sleep / Restart |
 
-4. Settings → Shortcuts → **System Actions** — aliases `lock`, `sleep`,
-   `restart`. Super+Space, then type the name. Optional: bind Super+Escape
-   to Lock Screen.
+Type `lock`, `sleep`, or `restart` in the panel. Optional: build the
+SwiftUI panel (`swift build -c release --package-path src/launcher`) and
+copy `OmakaseLauncher` to `~/.config/omakase/libexec/`. Without that
+binary, Super+Space uses a local osascript prompt. Direct Super chords
+still work.
 
-Full table and skip rules: [`config/raycast/README.md`](config/raycast/README.md).
+Full table: [`config/launcher/README.md`](config/launcher/README.md).
 
 ### 5. Smoke the v0 path
 
@@ -207,7 +212,7 @@ Full table and skip rules: [`config/raycast/README.md`](config/raycast/README.md
 2. Open Final Cut Pro (or Photos / QuickTime). It still opens. Native.
 3. `Super+Ctrl+Shift+Space` cycles Kyoto → Mocha → Ume. Bar, borders, and a
    new Ghostty window follow.
-4. Super+Space opens Raycast (Spotlight does not). Super+Return opens Ghostty
+4. Super+Space opens the Omakase launcher. Super+Return opens Ghostty
    or Terminal. Super+Shift+F opens Finder.
 5. `Super+Shift+Ctrl+A` lists local agents already on this Mac (Cursor,
    Cursor Agent CLI, aider / claude / codex / copilot, plus `extra=`).
@@ -220,18 +225,20 @@ Full table and skip rules: [`config/raycast/README.md`](config/raycast/README.md
 bin/omakase-theme       Cycle or set Kyoto / Mocha / Ume
 bin/omakase-agent       Pick / focus a local coding agent
 bin/omakase-lock        Lock screen (Super+Ctrl+L)
-config/aerospace/       Super-key map (A + C agents / lock / theme)
+bin/omakase-launch      Super+Space + daily app launches (section B)
+config/aerospace/       Super-key map (A + B launcher + C agents / lock / theme)
 config/themes/          Shared palettes (theme.sh + ghostty.conf)
 config/sketchybar/      Bar — reads the active theme
 config/borders/         JankyBorders — same palette
 config/ghostty/         Ghostty include for the active theme
-config/raycast/         Super+Space + daily app-launch preset (section B)
+config/launcher/        Super+Space contract + launch.conf overrides
+src/launcher/           SwiftUI panel (optional build; osascript fallback)
 config/agents/          Local agent catalog + captain override
 docs/bind-parity.md     Daily bind checklist (Omarchy A / B / C)
 ```
 
-No `.rayconfig` and no install automation. Raycast is the checklist in
-`config/raycast/`.
+No install automation. The launcher is `bin/omakase-launch` plus, when
+you build it, the panel in `src/launcher/`.
 
 ## Bind parity
 
@@ -256,10 +263,10 @@ time. The README plus this video are the v0 demo.
 
 Must show, in order:
 
-1. **Cold Mac** — SIP enabled, no prior AeroSpace / SketchyBar / Raycast setup
+1. **Cold Mac** — SIP enabled, no prior AeroSpace / SketchyBar / launcher setup
    (or a clearly wiped config).
-2. **Install ≤10 minutes** — Homebrew, AeroSpace, SketchyBar, Raycast preset,
-   Super map. Wall-clock visible.
+2. **Install ≤10 minutes** — Homebrew, AeroSpace, SketchyBar, Omakase
+   launcher, Super map. Wall-clock visible.
 3. **Super binds** — workspace jump, focus, move, float/fullscreen, close.
 4. **Final Cut still opens** — launch Final Cut Pro (or another Apple pro app
    if FCP is not installed) and use it as a normal Mac app.
