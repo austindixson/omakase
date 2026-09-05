@@ -1,0 +1,294 @@
+#!/bin/bash
+# Cold-Mac Omakase install. SIP on. Owned launcher. No third-party launcher.
+#
+#   ./bin/install              full path (packages + configs + Kyoto + start)
+#   ./bin/install --copy-only  configs + Kyoto only (tests / re-copy)
+#
+# Re-run is safe: Super map, workspace pills, borders, Ghostty, themes,
+# and bins overwrite. launch.conf and agents.conf are left alone if
+# present. Leftover clock.sh / front_app.sh are deleted.
+#
+# Functions stay small on purpose (Clue: keep McCabe well under 13).
+set -euo pipefail
+
+REPO="$(cd "$(dirname "$0")/.." && pwd)"
+CONFIG="${HOME}/.config"
+OMAKASE="${CONFIG}/omakase"
+COPY_ONLY=0
+
+die() {
+  echo "omakase-install: $*" >&2
+  exit 1
+}
+
+usage() {
+  echo "usage: install [--copy-only]" >&2
+  exit 2
+}
+
+parse_args() {
+  COPY_ONLY=0
+  case "${1:-}" in
+    '') ;;
+    --copy-only) COPY_ONLY=1 ;;
+    -h|--help) usage ;;
+    *) usage ;;
+  esac
+}
+
+skip_machine() {
+  [ "${COPY_ONLY}" = 1 ]
+}
+
+require_macos() {
+  if skip_machine; then
+    return 0
+  fi
+  if [ "$(uname -s)" = Darwin ]; then
+    return 0
+  fi
+  die "this installer runs on macOS only."
+}
+
+require_sip() {
+  if skip_machine; then
+    return 0
+  fi
+  if ! command -v csrutil >/dev/null 2>&1; then
+    die "csrutil not found. Omakase needs macOS with SIP on."
+  fi
+  local status
+  status="$(csrutil status 2>/dev/null || true)"
+  case "${status}" in
+    *enabled*) return 0 ;;
+  esac
+  echo "omakase-install: SIP is not enabled." >&2
+  echo "Omakase requires System Integrity Protection on." >&2
+  echo "There is no SIP-off install path." >&2
+  exit 1
+}
+
+print_brew_error() {
+  cat <<'EOF' >&2
+omakase-install: Homebrew is not on PATH.
+
+Install Homebrew, follow its Next steps (add brew to PATH), then re-run
+./bin/install:
+
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+This script will not run that installer for you.
+EOF
+}
+
+load_brew_from() {
+  local brew_bin="$1"
+  if [ -x "${brew_bin}" ]; then
+    eval "$("${brew_bin}" shellenv)"
+    return 0
+  fi
+  return 1
+}
+
+find_brew() {
+  if command -v brew >/dev/null 2>&1; then
+    return 0
+  fi
+  if load_brew_from /opt/homebrew/bin/brew; then
+    return 0
+  fi
+  load_brew_from /usr/local/bin/brew
+}
+
+ensure_brew() {
+  if skip_machine; then
+    return 0
+  fi
+  if find_brew; then
+    return 0
+  fi
+  print_brew_error
+  exit 1
+}
+
+install_packages() {
+  if skip_machine; then
+    return 0
+  fi
+  # aerospace + ghostty are casks. sketchybar + borders are formulae.
+  # Do not add a third-party launcher cask.
+  brew install --cask nikitabobko/tap/aerospace
+  brew install FelixKratz/formulae/sketchybar
+  brew install FelixKratz/formulae/borders
+  brew install --cask ghostty
+}
+
+copy_file() {
+  local src="$1"
+  local dest="$2"
+  mkdir -p "$(dirname "${dest}")"
+  cp "${src}" "${dest}"
+}
+
+copy_tree() {
+  local src="$1"
+  local dest="$2"
+  mkdir -p "${dest}"
+  cp -R "${src}/." "${dest}/"
+}
+
+copy_if_absent() {
+  local src="$1"
+  local dest="$2"
+  if [ -e "${dest}" ]; then
+    return 0
+  fi
+  copy_file "${src}" "${dest}"
+}
+
+remove_stale_bar_plugins() {
+  # Workspace pills only. Drop rejected FM-OMAKASE-1 chrome if present.
+  rm -f "${CONFIG}/sketchybar/plugins/clock.sh" \
+        "${CONFIG}/sketchybar/plugins/front_app.sh"
+}
+
+install_surface_configs() {
+  copy_file "${REPO}/config/aerospace/aerospace.toml" "${CONFIG}/aerospace/aerospace.toml"
+  copy_file "${REPO}/config/sketchybar/sketchybarrc" "${CONFIG}/sketchybar/sketchybarrc"
+  copy_file "${REPO}/config/sketchybar/colors.sh" "${CONFIG}/sketchybar/colors.sh"
+  copy_tree "${REPO}/config/sketchybar/plugins" "${CONFIG}/sketchybar/plugins"
+  remove_stale_bar_plugins
+  copy_file "${REPO}/config/borders/bordersrc" "${CONFIG}/borders/bordersrc"
+  copy_file "${REPO}/config/ghostty/config" "${CONFIG}/ghostty/config"
+}
+
+install_bins() {
+  local name
+  for name in omakase-theme omakase-launch omakase-agent omakase-lock; do
+    copy_file "${REPO}/bin/${name}" "${OMAKASE}/bin/${name}"
+  done
+}
+
+install_omakase_tree() {
+  copy_tree "${REPO}/config/themes" "${OMAKASE}/themes"
+  install_bins
+  copy_tree "${REPO}/src/launcher" "${OMAKASE}/src/launcher"
+  copy_file "${REPO}/config/launcher/README.md" "${OMAKASE}/docs/launcher.md"
+  copy_file "${REPO}/config/agents/README.md" "${OMAKASE}/docs/agents.md"
+  copy_if_absent "${REPO}/config/launcher/launch.conf" "${OMAKASE}/launch.conf"
+  copy_if_absent "${REPO}/config/agents/agents.conf" "${OMAKASE}/agents.conf"
+}
+
+chmod_scripts() {
+  chmod +x "${OMAKASE}/bin/"*
+  chmod +x "${CONFIG}/sketchybar/plugins/"*
+  chmod +x "${CONFIG}/sketchybar/sketchybarrc"
+  chmod +x "${CONFIG}/borders/bordersrc"
+}
+
+build_swift_launcher() {
+  local src="${OMAKASE}/src/launcher"
+  if ! swift build -c release --package-path "${src}"; then
+    echo "omakase-install: Swift panel build failed; Super+Space uses osascript."
+    return 0
+  fi
+  mkdir -p "${OMAKASE}/libexec"
+  cp "${src}/.build/release/OmakaseLauncher" "${OMAKASE}/libexec/OmakaseLauncher"
+  chmod +x "${OMAKASE}/libexec/OmakaseLauncher"
+}
+
+maybe_build_swift() {
+  if skip_machine; then
+    return 0
+  fi
+  if ! command -v swift >/dev/null 2>&1; then
+    echo "omakase-install: swift not on PATH; Super+Space uses osascript."
+    return 0
+  fi
+  build_swift_launcher
+}
+
+apply_kyoto() {
+  "${OMAKASE}/bin/omakase-theme" kyoto
+}
+
+reload_aerospace() {
+  if ! command -v aerospace >/dev/null 2>&1; then
+    return 1
+  fi
+  aerospace reload-config || return 1
+}
+
+open_aerospace() {
+  if ! command -v open >/dev/null 2>&1; then
+    return 0
+  fi
+  open -a AeroSpace || true
+}
+
+start_aerospace() {
+  if reload_aerospace; then
+    return 0
+  fi
+  open_aerospace
+}
+
+start_formula() {
+  local name="$1"
+  brew services start "${name}" || true
+}
+
+start_stack() {
+  if skip_machine; then
+    return 0
+  fi
+  start_aerospace
+  if ! command -v brew >/dev/null 2>&1; then
+    return 0
+  fi
+  start_formula sketchybar
+  start_formula borders
+}
+
+print_next_steps() {
+  cat <<EOF
+
+Omakase is on disk. Captain next steps:
+
+1. Accessibility
+   Grant Accessibility to AeroSpace when macOS asks
+   (System Settings → Privacy & Security → Accessibility).
+
+2. Super+Space and the first binds
+   Super+Space opens the Omakase launcher (osascript until the Swift
+   panel is built). Super+Return opens Ghostty or Terminal.
+   Super+Shift+F opens Finder. Super+Ctrl+Shift+Space cycles themes.
+   Option+Enter focuses or launches the primary agent.
+
+3. Spotlight ⌘Space disable is required
+   System Settings → Keyboard → Keyboard Shortcuts → Spotlight →
+   uncheck Show Spotlight search. Super+Space only wins after that.
+   Reclaim: turn the checkbox back on, remove cmd-space from
+   ~/.config/aerospace/aerospace.toml, then aerospace reload-config
+   (or quit AeroSpace). See ${OMAKASE}/docs/launcher.md.
+
+Bins live in ${OMAKASE}/bin. Re-run ./bin/install any time.
+EOF
+}
+
+main() {
+  parse_args "$@"
+  require_macos
+  require_sip
+  ensure_brew
+  install_packages
+  install_surface_configs
+  install_omakase_tree
+  chmod_scripts
+  maybe_build_swift
+  apply_kyoto
+  start_stack
+  print_next_steps
+}
+
+main "$@"

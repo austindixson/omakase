@@ -73,7 +73,8 @@ Cursor CLI notes (do not auto-install):
 
 ## Install
 
-Same copy path as the theme switcher (`~/.config/omakase/bin/`):
+`./bin/install` copies these. Same path as the theme switcher
+(`~/.config/omakase/bin/`) if you are doing it by hand:
 
 ```bash
 cp bin/omakase-agent ~/.config/omakase/bin/omakase-agent

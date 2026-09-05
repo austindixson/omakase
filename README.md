@@ -9,8 +9,8 @@ This repo is the **FM-OMAKASE-1** Super map plus **FM-OMAKASE-2** live-try
 fixes: section A (Navigate) is live in AeroSpace; three themes paint
 workspace pills, JankyBorders, and Ghostty from one switch; section B is
 the owned Omakase launcher; section C agent primary is **Option+Enter**.
-The bar is workspace-only in the native menu bar. Full install automation
-is still out of scope.
+The bar is workspace-only in the native menu bar. Cold-Mac install is
+`./bin/install`.
 
 ## What this is
 
@@ -100,15 +100,90 @@ AeroSpace. See `config/borders/bordersrc`.
 
 ## Cold-Mac install (v0 target: ≤10 minutes)
 
-No installer script. Copy by hand, then run the theme switcher once.
+One shot from a clone of this repo:
 
-### 0. Prerequisites
+```bash
+./bin/install
+```
+
+The script confirms SIP is on (and exits if it is not — there is no
+SIP-off path), requires Homebrew, installs AeroSpace, SketchyBar,
+JankyBorders, and Ghostty, copies the Super map / workspace pills /
+borders / Ghostty / themes / owned launcher, paints Kyoto, and starts
+the stack where it can. Re-run is safe: product files overwrite;
+`launch.conf` and `agents.conf` are left alone if you already have them.
+Leftover `clock.sh` / `front_app.sh` from an older bar are deleted.
+
+If Homebrew is missing, the script prints the official installer command
+and stops. Install brew, add it to `PATH`, then re-run `./bin/install`.
+
+`./bin/install --copy-only` refreshes configs and Kyoto without touching
+packages. That is also the Linux-testable path.
+
+### Captain next steps (the script prints these)
+
+1. Grant Accessibility to AeroSpace when macOS asks.
+2. Super+Space opens the Omakase launcher. Super+Return / Super+Shift+F
+   are the first daily binds. Super+Ctrl+Shift+Space cycles themes.
+   Option+Enter focuses or launches the primary agent.
+3. Spotlight ⌘Space disable is **required**. System Settings → Keyboard
+   → Keyboard Shortcuts → Spotlight → uncheck Show Spotlight search.
+   Super+Space only wins after that. See
+   [`config/launcher/README.md`](config/launcher/README.md).
+
+SketchyBar is workspace pills on the native menu bar only — no Screen
+Recording, no clock / wordmark / theme-name chrome. See
+[`config/sketchybar/README.md`](config/sketchybar/README.md).
+
+### Super+Space is the Omakase launcher (section B)
+
+AeroSpace binds `cmd-space` to `omakase-launch`. That is the Omarchy
+chord. It wins only after Spotlight’s ⌘Space is unchecked.
+
+Daily launches are the same file:
+
+| Super | Opens |
+| --- | --- |
+| `Super+Return` | Ghostty (or Terminal.app if Ghostty is missing) |
+| `Super+Shift+Return` | Safari (or `browser=` in `~/.config/omakase/launch.conf`) |
+| `Super+Shift+F` | Finder |
+| `Super+Shift+N` | TextEdit — set `editor=` if you already have one |
+| `Super+Shift+M` | Music.app |
+| `Super+Shift+/` | 1Password if installed; skip if not |
+| `Super+Escape` | Lock / Sleep / Restart |
+
+Type `lock`, `sleep`, or `restart` in the panel. Optional: build the
+SwiftUI panel (`swift build -c release --package-path src/launcher`) and
+copy `OmakaseLauncher` to `~/.config/omakase/libexec/`. Without that
+binary, Super+Space uses a local osascript prompt. Direct Super chords
+still work.
+
+Full table: [`config/launcher/README.md`](config/launcher/README.md).
+
+### Smoke the v0 path
+
+1. Super section A binds respond (workspace jump, focus, move, float / fullscreen, close). New windows tile; only Final Cut / Logic / Photos / QuickTime float.
+2. Open Final Cut Pro (or Photos / QuickTime). It still opens. Native.
+3. `Super+Ctrl+Shift+Space` cycles Kyoto → Mocha → Ume. Workspace pills,
+   borders, and a new Ghostty window follow. No clock / wordmark / theme name.
+4. Super+Space opens the Omakase launcher (not Spotlight). Super+Return
+   opens Ghostty or Terminal. Super+Shift+F opens Finder.
+5. `Super+Shift+Ctrl+A` lists local agents already on this Mac (Cursor,
+   Cursor Agent CLI, aider / claude / codex / copilot, plus `extra=`).
+   `Option+Enter` focuses or launches the primary (Cursor if present).
+   `Super+Ctrl+L` locks the screen. Nothing is auto-installed.
+
+### Manual path (fallback)
+
+If you cannot run `./bin/install`, copy by hand.
+
+#### 0. Prerequisites
 
 - A Mac you will keep as a Mac (Apple Silicon or Intel).
 - SIP on (`csrutil status`).
 - About ten minutes, including Accessibility prompts.
 
-### 1. Homebrew
+#### 1. Homebrew
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -116,7 +191,7 @@ No installer script. Copy by hand, then run the theme switcher once.
 
 Follow the brew “Next steps” it prints (usually adding `brew` to `PATH`).
 
-### 2. Engine, workspace pills, borders, terminal
+#### 2. Engine, workspace pills, borders, terminal
 
 ```bash
 brew install --cask nikitabobko/tap/aerospace
@@ -129,7 +204,7 @@ Grant Accessibility to AeroSpace when macOS asks. SketchyBar is only
 workspace pills on the native menu bar — no Screen Recording, no clock /
 wordmark / theme-name chrome. See [`config/sketchybar/README.md`](config/sketchybar/README.md).
 
-### 3. Drop in the configs
+#### 3. Drop in the configs
 
 From a clone of this repo:
 
@@ -164,7 +239,7 @@ cp bin/omakase-lock ~/.config/omakase/bin/omakase-lock
 cp config/launcher/launch.conf ~/.config/omakase/launch.conf
 
 # Optional: build the SwiftUI panel (osascript fallback works without it)
-# cp -R src/launcher ~/.config/omakase/launcher
+# cp -R src/launcher ~/.config/omakase/src/launcher
 # Agent catalog + captain override: config/agents/
 ```
 
@@ -185,7 +260,7 @@ brew services start sketchybar
 brew services start borders
 ```
 
-### 4. Disable Spotlight’s ⌘Space (required)
+#### 4. Disable Spotlight’s ⌘Space (required)
 
 Super+Space is the Omakase launcher. Spotlight and AeroSpace cannot share
 ⌘Space. This is a required cold-Mac step, not a contested fallback.
@@ -198,47 +273,10 @@ that checkbox back on, remove `cmd-space` from `aerospace.toml`, and
 reload (or quit AeroSpace). Full contract:
 [`config/launcher/README.md`](config/launcher/README.md).
 
-### 5. Super+Space is the Omakase launcher (section B)
-
-AeroSpace binds `cmd-space` to `omakase-launch`. That is the Omarchy
-chord. It wins only after step 4.
-
-Daily launches are the same file:
-
-| Super | Opens |
-| --- | --- |
-| `Super+Return` | Ghostty (or Terminal.app if Ghostty is missing) |
-| `Super+Shift+Return` | Safari (or `browser=` in `~/.config/omakase/launch.conf`) |
-| `Super+Shift+F` | Finder |
-| `Super+Shift+N` | TextEdit — set `editor=` if you already have one |
-| `Super+Shift+M` | Music.app |
-| `Super+Shift+/` | 1Password if installed; skip if not |
-| `Super+Escape` | Lock / Sleep / Restart |
-
-Type `lock`, `sleep`, or `restart` in the panel. Optional: build the
-SwiftUI panel (`swift build -c release --package-path src/launcher`) and
-copy `OmakaseLauncher` to `~/.config/omakase/libexec/`. Without that
-binary, Super+Space uses a local osascript prompt. Direct Super chords
-still work.
-
-Full table: [`config/launcher/README.md`](config/launcher/README.md).
-
-### 6. Smoke the v0 path
-
-1. Super section A binds respond (workspace jump, focus, move, float / fullscreen, close). New windows tile; only Final Cut / Logic / Photos / QuickTime float.
-2. Open Final Cut Pro (or Photos / QuickTime). It still opens. Native.
-3. `Super+Ctrl+Shift+Space` cycles Kyoto → Mocha → Ume. Workspace pills,
-   borders, and a new Ghostty window follow. No clock / wordmark / theme name.
-4. Super+Space opens the Omakase launcher (not Spotlight). Super+Return
-   opens Ghostty or Terminal. Super+Shift+F opens Finder.
-5. `Super+Shift+Ctrl+A` lists local agents already on this Mac (Cursor,
-   Cursor Agent CLI, aider / claude / codex / copilot, plus `extra=`).
-   `Option+Enter` focuses or launches the primary (Cursor if present).
-   `Super+Ctrl+L` locks the screen. Nothing is auto-installed.
-
 ## Repo layout
 
 ```
+bin/install             Cold-Mac one-shot (SIP on, packages, configs, Kyoto)
 bin/omakase-theme       Cycle or set Kyoto / Mocha / Ume
 bin/omakase-agent       Pick / focus a local coding agent
 bin/omakase-lock        Lock screen (Super+Ctrl+L)
@@ -255,8 +293,9 @@ docs/bind-parity.md     Daily bind checklist (Omarchy A / B / C)
 docs/tiling.md          SIP-on AeroSpace vs Hyprland (honest limits)
 ```
 
-No install automation. The launcher is `bin/omakase-launch` plus, when
-you build it, the panel in `src/launcher/`.
+The launcher is `bin/omakase-launch` plus, when you build it, the panel
+in `src/launcher/`. `./bin/install` copies both and builds the panel
+when `swift` is on `PATH`.
 
 ## Bind parity
 
@@ -283,8 +322,8 @@ Must show, in order:
 
 1. **Cold Mac** — SIP enabled, no prior AeroSpace / SketchyBar / launcher setup
    (or a clearly wiped config).
-2. **Install ≤10 minutes** — Homebrew, AeroSpace, SketchyBar, Omakase
-   launcher, Super map. Wall-clock visible.
+2. **Install ≤10 minutes** — `./bin/install` (Homebrew, AeroSpace,
+   SketchyBar, Omakase launcher, Super map). Wall-clock visible.
 3. **Super binds** — workspace jump, focus, move, float/fullscreen, close.
 4. **Final Cut still opens** — launch Final Cut Pro (or another Apple pro app
    if FCP is not installed) and use it as a normal Mac app.
