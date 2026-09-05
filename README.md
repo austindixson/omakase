@@ -281,6 +281,7 @@ bin/omakase-theme       Cycle or set Kyoto / Mocha / Ume
 bin/omakase-agent       Pick / focus a local coding agent
 bin/omakase-lock        Lock screen (Super+Ctrl+L)
 bin/omakase-launch      Super+Space + daily app launches (section B)
+bin/omakase-proof-demo  Non-interactive proof take (aerospace + product bins)
 config/aerospace/       Super-key map (A + B launcher + C agents / lock / theme)
 config/themes/          Shared palettes (theme.sh + ghostty.conf)
 config/sketchybar/      Workspace pills only (what install copies)
@@ -291,6 +292,8 @@ src/launcher/           SwiftUI panel (optional build; osascript fallback)
 config/agents/          Local agent catalog + captain override
 docs/bind-parity.md     Daily bind checklist (Omarchy A / B / C)
 docs/tiling.md          SIP-on AeroSpace vs Hyprland (honest limits)
+docs/proof-video.md     v0 shot list (post-#8 product)
+docs/proof/             Placeholder for omakase-v0.mp4 (or a release link)
 ```
 
 The launcher is `bin/omakase-launch` plus, when you build it, the panel
@@ -318,19 +321,32 @@ Deferred on purpose (not counted against the 80%):
 Public proof that a cold Mac becomes Omakase. One take, no jump cuts that hide
 time. The README plus this video are the v0 demo.
 
+Shot list: [`docs/proof-video.md`](docs/proof-video.md).
+Recording aid: `bin/omakase-proof-demo` (aerospace CLI + `omakase-launch` /
+`omakase-theme` / `omakase-agent`). Artifact: [`docs/proof/omakase-v0.mp4`](docs/proof/)
+or a release link.
+
 Must show, in order:
 
-1. **Cold Mac** — SIP enabled, no prior AeroSpace / SketchyBar / launcher setup
-   (or a clearly wiped config).
+1. **Cold Mac** — SIP enabled (`csrutil status`), no prior AeroSpace /
+   SketchyBar / launcher setup (or a clearly wiped config).
 2. **Install ≤10 minutes** — `./bin/install` (Homebrew, AeroSpace,
-   SketchyBar, Omakase launcher, Super map). Wall-clock visible.
+   SketchyBar, owned Omakase launcher, Super map). Wall-clock visible.
+   Spotlight ⌘Space disable is **required** (uncheck Show Spotlight search).
 3. **Super binds** — workspace jump, focus, move, float/fullscreen, close.
-4. **Final Cut still opens** — launch Final Cut Pro (or another Apple pro app
-   if FCP is not installed) and use it as a normal Mac app.
-5. **Agent hotkey** — Super bind that focuses or launches a local coding agent.
+4. **Tiling + native apps** — new windows tile; workspace-only pills in
+   the menu bar (no clock / wordmark / theme name). Final Cut Pro (or
+   Photos / QuickTime) still opens as a normal Mac app.
+5. **Owned launcher** — Super+Space opens the Omakase launcher, not
+   Spotlight. Super+Return opens Ghostty or Terminal. Super+Shift+F
+   opens Finder.
+6. **Option+Enter primary** — focuses or launches the local coding agent
+   (Cursor if present). Nothing is auto-installed.
+7. **Theme cycle** — `Super+Ctrl+Shift+Space` cycles Kyoto → Mocha → Ume.
+   Pills, borders, and a new Ghostty window follow.
 
-Link the video from a future release note. This scaffold only defines the
-criteria.
+Link the video from a future release note. Capture is not in this repo
+until a Mac take lands in `docs/proof/`.
 
 ## License
 
