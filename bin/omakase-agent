@@ -124,6 +124,13 @@ discover() {
   local extra extra_id extra_label extra_kind extra_target
   [ "${#EXTRAS[@]}" -eq 0 ] && return 0
   for extra in "${EXTRAS[@]}"; do
+    case "${extra}" in
+      *'|'*'|'*'|'*) ;;
+      *)
+        echo "omakase-agent: skip malformed extra= (id|label|kind|target)" >&2
+        continue
+        ;;
+    esac
     extra_id="${extra%%|*}"
     extra="${extra#*|}"
     extra_label="${extra%%|*}"
@@ -134,6 +141,13 @@ discover() {
       echo "omakase-agent: skip malformed extra= (id|label|kind|target)" >&2
       continue
     fi
+    case "${extra_kind}" in
+      app|cli) ;;
+      *)
+        echo "omakase-agent: skip extra ${extra_id}: kind must be app or cli" >&2
+        continue
+        ;;
+    esac
     [ -n "${extra_label}" ] || extra_label="${extra_id}"
     add "${extra_id}" "${extra_label}" "${extra_kind}" "${extra_target}"
   done
@@ -173,11 +187,12 @@ none_found() {
 
 launch_app() {
   local name="$1"
-  if command -v open >/dev/null 2>&1; then
+  # macOS open(1) understands -a. Linux xdg-open also ships as `open`.
+  if [ "$(uname -s)" = Darwin ] && command -v open >/dev/null 2>&1; then
     open -a "${name}"
     return 0
   fi
-  echo "omakase-agent: open(1) missing; would launch app ${name}" >&2
+  echo "omakase-agent: need macOS open(1); would launch app ${name}" >&2
   exit 1
 }
 
