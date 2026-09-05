@@ -1,0 +1,25 @@
+#!/bin/bash
+# JankyBorders — SIP-on window chrome. Same palette as the bar and Ghostty.
+#
+# Why borders (not yabai, not AeroSpace-native): AeroSpace has no window
+# border color. FelixKratz/JankyBorders is the usual SketchyBar + AeroSpace
+# pair and does not need SIP off.
+# https://github.com/FelixKratz/JankyBorders
+# https://nikitabobko.github.io/AeroSpace/goodies
+#
+# Drop at: ~/.config/borders/bordersrc
+# Then:    brew services start borders
+# Live paint: omakase-theme (calls `borders` with the active colors).
+
+THEME="${HOME}/.config/omakase/current/theme.sh"
+if [ -f "${THEME}" ]; then
+  # shellcheck disable=SC1090
+  source "${THEME}"
+fi
+
+borders \
+  style=round \
+  width=5.0 \
+  hidpi=on \
+  active_color="${BORDER_ACTIVE:-0xffc9a227}" \
+  inactive_color="${BORDER_INACTIVE:-0xff4a453e}"

@@ -1,5 +1,4 @@
 #!/bin/bash
-# Minimal clock so the SketchyBar stub has one live item.
-# Themes will restyle this; do not add a widget farm here.
+# Clock. Theme colors are applied by sketchybarrc on reload.
 
-sketchybar --set clock label="$(date '+%a %H:%M')"
+sketchybar --set "${NAME:-clock}" label="$(date '+%a %H:%M')"
