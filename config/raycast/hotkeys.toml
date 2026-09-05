@@ -1,0 +1,33 @@
+# Omakase Raycast preset stub (FM-OMAKASE-1)
+#
+# Not a Raycast export. The table is the contract for Super+Space and
+# daily app launches (bind-parity section B). All rows are stubbed.
+#
+# Super = Command. Disable Spotlight on Command+Space first.
+
+# [mac-mapped] Super+Space — launcher
+# raycast.hotkey = "cmd-space"
+
+# [mac-mapped] Super+Return — Terminal
+# launch.terminal.hotkey = "cmd-enter"
+# launch.terminal.app = "Terminal"   # or Ghostty
+
+# [mac-mapped] Super+Shift+Return — Browser
+# launch.browser.hotkey = "cmd-shift-enter"
+
+# [mac-mapped] Super+Shift+F — Files (Finder)
+# launch.files.hotkey = "cmd-shift-f"
+# launch.files.app = "Finder"
+
+# [mac-mapped] Super+Shift+N — Editor
+# launch.editor.hotkey = "cmd-shift-n"
+
+# [mac-mapped] Super+Shift+M — Music.app
+# launch.music.hotkey = "cmd-shift-m"
+# launch.music.app = "Music"
+
+# [mac-mapped] Super+Shift+/ — Passwords (1Password if present)
+# launch.passwords.hotkey = "cmd-shift-slash"
+
+# [mac-mapped] Super+Escape — system commands (lock / sleep / restart)
+# launch.system.hotkey = "cmd-esc"

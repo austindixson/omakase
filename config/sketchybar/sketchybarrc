@@ -1,0 +1,42 @@
+#!/bin/bash
+# Omakase SketchyBar stub (FM-OMAKASE-1)
+#
+# Placeholder only. Do not treat this as a bar theme.
+#
+# Locked: SketchyBar is the bar. Three themes will paint:
+#   1. this bar
+#   2. window borders
+#   3. the terminal
+# Theme packs are not part of this scaffold.
+#
+# Drop at: ~/.config/sketchybar/sketchybarrc
+# Then:    brew services start sketchybar
+#
+# See docs/bind-parity.md section C for Super+Ctrl+Shift+Space (theme pick).
+
+PLUGIN_DIR="${HOME}/.config/sketchybar/plugins"
+
+sketchybar --bar \
+  height=32 \
+  position=top \
+  sticky=on \
+  padding_left=8 \
+  padding_right=8 \
+  color=0x00000000
+
+# Left: workspace hint. Real workspace indicators come later with the Super map.
+sketchybar --add item omakase.mark left \
+  --set omakase.mark \
+    icon="omakase" \
+    icon.color=0xffaaaaaa \
+    label="bar stub — 3 themes will paint this" \
+    label.color=0xff888888
+
+# Right: clock so the process is visibly alive after `brew services start`.
+sketchybar --add item clock right \
+  --set clock \
+    update_freq=30 \
+    script="${PLUGIN_DIR}/clock.sh" \
+    label.color=0xffaaaaaa
+
+sketchybar --update
