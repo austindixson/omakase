@@ -59,7 +59,7 @@ Settings → Shortcuts. Filter **System Actions** (built-in, already installed).
 Raycast has no first-party power-menu window. Omarchy `Super+Escape` is
 **Super+Space**, then type `lock` / `sleep` / `restart`, Enter.
 
-`Super+Ctrl+L` (section C lock) stays stubbed. Do not bind it here.
+`Super+Ctrl+L` (section C lock) is AeroSpace → `omakase-lock`. Do not bind it here.
 
 ### 4. Smoke
 
