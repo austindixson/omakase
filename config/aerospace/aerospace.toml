@@ -1,20 +1,22 @@
-# Omakase Super map — AeroSpace stub (FM-OMAKASE-1)
+# Omakase Super map — AeroSpace (FM-OMAKASE-1)
 #
 # Super = Command (cmd). Same muscle memory as Omarchy / Hyprland.
 # SIP stays on. This file is the window-manager half of the Super map.
 #
-# Binds are COMMENTED. Uncommenting them is implementation work, not this
-# scaffold. Status tags match docs/bind-parity.md:
+# Section A (Navigate) is live. B (Raycast) and C (agents) stay out of
+# this file. Status tags match docs/bind-parity.md:
 #
 #   [mac-mapped]  intended for v0 (section A daily)
 #   [deferred]    Hyprland-only layouts, Super clipboard, nested app chords
 #
 # Drop at: ~/.config/aerospace/aerospace.toml
+# Reload:  aerospace reload-config   (or AeroSpace menu extra → Reload config)
 # Docs:    https://nikitabobko.github.io/AeroSpace/guide
+# Commands:https://nikitabobko.github.io/AeroSpace/commands
 #
 # Raycast owns Super+Space and daily app launches (config/raycast/).
 # Agents own Super+Shift+Ctrl+A and Super+Ctrl+Return (config/agents/).
-# Do not bind those here.
+# Do not bind those here. Do not bind cmd-c / cmd-x / cmd-v.
 
 config-version = 2
 start-at-login = true
@@ -29,8 +31,8 @@ default-root-container-orientation = 'auto'
 automatically-unhide-macos-hidden-apps = false
 key-mapping.preset = 'qwerty'
 
-# Gaps stay 0 in the stub. The three themes will set bar / border / terminal
-# chrome later; do not invent a theme pack here.
+# Gaps stay 0. The three themes will set bar / border / terminal chrome
+# later; do not invent a theme pack here.
 gaps.inner.horizontal = 0
 gaps.inner.vertical = 0
 gaps.outer.left = 0
@@ -38,20 +40,16 @@ gaps.outer.bottom = 0
 gaps.outer.top = 0
 gaps.outer.right = 0
 
-# Native Apple apps (Final Cut, Logic, Photos, QuickTime) should float so
-# they keep opening and behaving like Mac apps. Rules stay commented until
-# the map is implemented.
-#
-# [[on-window-detected]]
-# if.app-name-regex-substring = 'Final Cut Pro'
-# run = ['layout floating']
-#
-# [[on-window-detected]]
-# if.app-name-regex-substring = 'Logic Pro'
-# run = ['layout floating']
+# Native Apple apps stay Mac apps: float so they keep opening natively.
+# Current AeroSpace syntax: if = 'test …' (legacy if.app-* is deprecated).
+on-window-detected = [
+    { if = 'test %{app-bundle-id} = com.apple.FinalCut', run = 'layout floating' },
+    { if = 'test %{app-bundle-id} = com.apple.logic10', run = 'layout floating' },
+    { if = 'test %{app-bundle-id} = com.apple.Photos', run = 'layout floating' },
+    { if = 'test %{app-bundle-id} = com.apple.QuickTimePlayerX', run = 'layout floating' },
+]
 
-# mode.main.binding is the Super map. Empty on purpose: AeroSpace will not
-# steal Command until we uncomment [mac-mapped] rows.
+# mode.main.binding is the Super map. Section A chords are live.
 [mode.main.binding]
 
     # -------------------------------------------------------------------------
@@ -59,85 +57,85 @@ gaps.outer.right = 0
     # -------------------------------------------------------------------------
 
     # [mac-mapped] Super+1/2/3/4 — jump to workspace
-    # cmd-1 = 'workspace 1'
-    # cmd-2 = 'workspace 2'
-    # cmd-3 = 'workspace 3'
-    # cmd-4 = 'workspace 4'
+    cmd-1 = 'workspace 1'
+    cmd-2 = 'workspace 2'
+    cmd-3 = 'workspace 3'
+    cmd-4 = 'workspace 4'
 
-    # [mac-mapped] Super+Tab / Super+Shift+Tab — next / previous workspace
-    # Collision: cmd-tab is the macOS app switcher. Keep the system switcher.
-    # Prefer Super+Ctrl+Tab for back-and-forth; implement Tab-as-workspace only
-    # if we can do it without eating the app switcher.
-    # cmd-ctrl-tab = 'workspace-back-and-forth'
-    # Possible later (not default):
+    # Super+Tab / Super+Shift+Tab — next / previous workspace
+    # Deferred. cmd-tab / cmd-shift-tab is the macOS app switcher. Do not steal it.
+    # Sequential walk can land later on a non-colliding chord (e.g. cmd-ctrl-left/right).
     # cmd-tab = 'workspace next --wrap-around'
     # cmd-shift-tab = 'workspace prev --wrap-around'
 
-    # [mac-mapped] Super+Ctrl+Tab — former workspace (see above)
+    # [mac-mapped] Super+Ctrl+Tab — former workspace / back-and-forth
+    cmd-ctrl-tab = 'workspace-back-and-forth'
 
     # [mac-mapped] Super+Shift+1/2/3/4 — move window to workspace (follow)
-    # cmd-shift-1 = 'move-node-to-workspace 1'
-    # cmd-shift-2 = 'move-node-to-workspace 2'
-    # cmd-shift-3 = 'move-node-to-workspace 3'
-    # cmd-shift-4 = 'move-node-to-workspace 4'
+    # AeroSpace does not follow by default; --focus-follows-window is the follow flag.
+    cmd-shift-1 = 'move-node-to-workspace --focus-follows-window 1'
+    cmd-shift-2 = 'move-node-to-workspace --focus-follows-window 2'
+    cmd-shift-3 = 'move-node-to-workspace --focus-follows-window 3'
+    cmd-shift-4 = 'move-node-to-workspace --focus-follows-window 4'
 
     # [mac-mapped] Super+Shift+Alt+1/2/3/4 — move window, do not follow
-    # AeroSpace follows by default; a no-follow helper is implementation work.
-    # cmd-shift-alt-1 = 'move-node-to-workspace 1'
-    # cmd-shift-alt-2 = 'move-node-to-workspace 2'
-    # cmd-shift-alt-3 = 'move-node-to-workspace 3'
-    # cmd-shift-alt-4 = 'move-node-to-workspace 4'
+    # Supported: omit --focus-follows-window (AeroSpace default).
+    cmd-shift-alt-1 = 'move-node-to-workspace 1'
+    cmd-shift-alt-2 = 'move-node-to-workspace 2'
+    cmd-shift-alt-3 = 'move-node-to-workspace 3'
+    cmd-shift-alt-4 = 'move-node-to-workspace 4'
 
     # [mac-mapped] Super+Arrow — focus
-    # cmd-left = 'focus left'
-    # cmd-down = 'focus down'
-    # cmd-up = 'focus up'
-    # cmd-right = 'focus right'
+    cmd-left = 'focus left'
+    cmd-down = 'focus down'
+    cmd-up = 'focus up'
+    cmd-right = 'focus right'
 
     # [mac-mapped] Super+Shift+Arrow — move (Omarchy “swap”)
-    # cmd-shift-left = 'move left'
-    # cmd-shift-down = 'move down'
-    # cmd-shift-up = 'move up'
-    # cmd-shift-right = 'move right'
+    cmd-shift-left = 'move left'
+    cmd-shift-down = 'move down'
+    cmd-shift-up = 'move up'
+    cmd-shift-right = 'move right'
 
     # [mac-mapped] Super+Minus / Super+Equal — resize
-    # cmd-minus = 'resize smart -50'
-    # cmd-equal = 'resize smart +50'
+    cmd-minus = 'resize smart -50'
+    cmd-equal = 'resize smart +50'
 
     # [mac-mapped] Super+Shift+Minus / Super+Shift+Equal — resize on the other axis
-    # cmd-shift-minus = 'resize smart-opposite -50'
-    # cmd-shift-equal = 'resize smart-opposite +50'
+    cmd-shift-minus = 'resize smart-opposite -50'
+    cmd-shift-equal = 'resize smart-opposite +50'
 
     # [mac-mapped] Super+T — toggle floating / tiling
-    # cmd-t = 'layout floating tiling'
+    cmd-t = 'layout floating tiling'
 
     # [mac-mapped] Super+F — fullscreen
     # Collision: cmd-f is Find in most Mac apps. Super map wins for the WM
     # chord; in-app Find stays available via the app menu.
-    # cmd-f = 'fullscreen'
+    cmd-f = 'fullscreen'
 
-    # [mac-mapped] Super+Grave — toggle scratchpad (preferred on Mac)
+    # [mac-mapped] Super+Grave — toggle scratchpad
     # Super+S is Omarchy’s other scratchpad chord. cmd-s is Save — do not steal it.
-    # Scratchpad = workspace 'scratch' (AeroSpace has no Hyprland special:).
-    # cmd-backtick = 'workspace scratch'
+    # --auto-back-and-forth makes Grave a toggle (scratch ↔ previous workspace).
+    # Collision: cmd-backtick is macOS “cycle windows of this app”. Super map wins.
+    cmd-backtick = 'workspace --auto-back-and-forth scratch'
 
     # [mac-mapped] Super+Alt+S — move window to scratchpad (leave it there)
-    # cmd-alt-s = 'move-node-to-workspace scratch'
+    cmd-alt-s = 'move-node-to-workspace scratch'
 
     # [mac-mapped] Super+W — close window (AeroSpace close, not app Quit)
-    # In-app cmd-w still closes tabs the Mac way when the bind is not live.
-    # cmd-w = 'close'
+    cmd-w = 'close'
 
     # [mac-mapped] Super+Shift+Alt+Arrow — move workspace to a monitor
-    # cmd-shift-alt-left = 'move-workspace-to-monitor --wrap-around left'
-    # cmd-shift-alt-down = 'move-workspace-to-monitor --wrap-around down'
-    # cmd-shift-alt-up = 'move-workspace-to-monitor --wrap-around up'
-    # cmd-shift-alt-right = 'move-workspace-to-monitor --wrap-around right'
+    cmd-shift-alt-left = 'move-workspace-to-monitor --wrap-around left'
+    cmd-shift-alt-down = 'move-workspace-to-monitor --wrap-around down'
+    cmd-shift-alt-up = 'move-workspace-to-monitor --wrap-around up'
+    cmd-shift-alt-right = 'move-workspace-to-monitor --wrap-around right'
 
     # -------------------------------------------------------------------------
     # A — deferred (Hyprland-only layouts / grouping)
     # -------------------------------------------------------------------------
 
+    # [deferred] Super+Tab / Super+Shift+Tab — workspace next/prev. See above.
     # [deferred] Super+L — dwindle ↔ scrolling. Not an AeroSpace pair.
     # [deferred] Super+P — dwindle pseudo.
     # [deferred] Super+J — toggle split.
