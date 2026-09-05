@@ -8,8 +8,7 @@ JankyBorders and Ghostty. They do not add bar chrome.
 
 ## What cold install copies
 
-`./bin/install` (PR #7, after it rebases onto this tree) and the README
-manual path copy this directory as-is:
+`./bin/install` and the README manual path copy this directory as-is:
 
 ```
 sketchybarrc          24px transparent overlay
