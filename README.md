@@ -100,6 +100,8 @@ cp config/aerospace/aerospace.toml ~/.config/aerospace/aerospace.toml
 
 # Bar placeholder — three themes will paint this later
 cp config/sketchybar/sketchybarrc ~/.config/sketchybar/sketchybarrc
+mkdir -p ~/.config/sketchybar/plugins
+cp config/sketchybar/plugins/clock.sh ~/.config/sketchybar/plugins/clock.sh
 
 # Raycast Super+Space + daily app launches: see config/raycast/
 # Agents Super binds: see config/agents/

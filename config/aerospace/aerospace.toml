@@ -161,6 +161,8 @@ gaps.outer.right = 0
     # [mac-mapped] Super+Ctrl+Return — primary agent
     # [mac-mapped] Super+Ctrl+L — lock (may live here later as exec-and-forget)
     # cmd-ctrl-l = 'exec-and-forget pmset displaysleepnow'
+    # [mac-mapped] Super+Ctrl+Shift+Space — pick one of the three themes
+    #              (paints SketchyBar, borders, terminal — not implemented here)
 
     # -------------------------------------------------------------------------
     # C — deferred (Super clipboard, nested app chords)
