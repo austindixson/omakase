@@ -7,8 +7,8 @@ product — not a better tiler than AeroSpace, not an AI OS, not a Hyprland port
 
 This repo is the **FM-OMAKASE-1** Super map: section A (Navigate) is live in
 AeroSpace; three themes paint SketchyBar, JankyBorders, and Ghostty from one
-switch. Raycast and agent binds stay stubbed. Full install automation is still
-out of scope.
+switch; Raycast section B is a first-party preset. Agent binds stay stubbed.
+Full install automation is still out of scope.
 
 ## What this is
 
@@ -153,7 +153,7 @@ cp config/ghostty/config ~/.config/ghostty/config
 cp -R config/themes/* ~/.config/omakase/themes/
 cp bin/omakase-theme ~/.config/omakase/bin/omakase-theme
 
-# Raycast Super+Space + daily app launches: see config/raycast/
+# Raycast Super+Space + daily app launches: config/raycast/ (checklist)
 # Agents Super binds: see config/agents/
 ```
 
@@ -173,12 +173,30 @@ brew services start sketchybar
 brew services start borders
 ```
 
-### 4. Raycast owns Super+Space
+### 4. Raycast owns Super+Space (section B)
 
-In Raycast: set the hotkey to **Command+Space** and disable Spotlight’s
-Command+Space in System Settings → Keyboard → Keyboard Shortcuts → Spotlight.
-Daily app launches (terminal, browser, files, editor) live in
-[`config/raycast/`](config/raycast/).
+The first-party preset is [`config/raycast/`](config/raycast/). No marketplace.
+No `.rayconfig` (encrypted, not durable). Finish this by hand:
+
+1. Open Raycast → Settings → General → Raycast Hotkey → **Command+Space**.
+2. System Settings → Keyboard → Keyboard Shortcuts → Spotlight → uncheck
+   **Show Spotlight search** (Command+Space).
+3. Settings → Shortcuts → **Applications** — assign the daily launches:
+
+   | Super | Opens |
+   | --- | --- |
+   | `Super+Return` | Ghostty (or Terminal.app if Ghostty is missing) |
+   | `Super+Shift+Return` | Default browser (Safari on a stock Mac) |
+   | `Super+Shift+F` | Finder |
+   | `Super+Shift+N` | TextEdit — change to your editor if you already have one |
+   | `Super+Shift+M` | Music.app |
+   | `Super+Shift+/` | 1Password if installed; skip if not |
+
+4. Settings → Shortcuts → **System Actions** — aliases `lock`, `sleep`,
+   `restart`. Super+Space, then type the name. Optional: bind Super+Escape
+   to Lock Screen.
+
+Full table and skip rules: [`config/raycast/README.md`](config/raycast/README.md).
 
 ### 5. Smoke the v0 path
 
@@ -186,7 +204,9 @@ Daily app launches (terminal, browser, files, editor) live in
 2. Open Final Cut Pro (or Photos / QuickTime). It still opens. Native.
 3. `Super+Ctrl+Shift+Space` cycles Kyoto → Mocha → Ume. Bar, borders, and a
    new Ghostty window follow.
-4. Hit the agent Super bind placeholder (`Super+Shift+Ctrl+A`) once agents
+4. Super+Space opens Raycast (Spotlight does not). Super+Return opens Ghostty
+   or Terminal. Super+Shift+F opens Finder.
+5. Hit the agent Super bind placeholder (`Super+Shift+Ctrl+A`) once agents
    are wired. Until then, the chord is documented, not live.
 
 ## Repo layout
@@ -198,16 +218,18 @@ config/themes/          Shared palettes (theme.sh + ghostty.conf)
 config/sketchybar/      Bar — reads the active theme
 config/borders/         JankyBorders — same palette
 config/ghostty/         Ghostty include for the active theme
-config/raycast/         Super+Space + daily app-launch preset stub
+config/raycast/         Super+Space + daily app-launch preset (section B)
 config/agents/          Super binds for local coding agents
 docs/bind-parity.md     Daily bind checklist (Omarchy A / B / C)
 ```
 
-Raycast preset export and install automation stay out of scope.
+No `.rayconfig` and no install automation. Raycast is the checklist in
+`config/raycast/`.
 
 ## Bind parity
 
 v0 target: **≥80% of the Omarchy daily set** (sections A / B / C).
+Section A + B + theme pick is **23 / 26 (88%)**. Agent rows in C are still stubbed.
 
 The checklist is [`docs/bind-parity.md`](docs/bind-parity.md). Status is one of
 `stubbed` / `implemented` / `deferred`.

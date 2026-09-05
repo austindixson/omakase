@@ -1,33 +1,73 @@
-# Omakase Raycast preset stub (FM-OMAKASE-1)
+# Omakase Raycast preset — section B (FM-OMAKASE-1)
 #
-# Not a Raycast export. The table is the contract for Super+Space and
-# daily app launches (bind-parity section B). All rows are stubbed.
+# First-party contract. Super = Command.
+# Not a Raycast .rayconfig: those are encrypted, passphrase-bound, and
+# the on-disk shape has already changed once. Do not reverse-engineer one.
 #
-# Super = Command. Disable Spotlight on Command+Space first.
+# Apply with the checklist in README.md in this folder.
+# AeroSpace must not bind these chords (see config/aerospace/aerospace.toml).
+
+name = "omakase-raycast"
+section = "B"
+super = "command"
 
 # [mac-mapped] Super+Space — launcher
-# raycast.hotkey = "cmd-space"
+[launcher]
+chord = "Super+Space"
+hotkey = "cmd-space"
+opens = "Raycast"
+spotlight = "disable"
 
 # [mac-mapped] Super+Return — Terminal
-# launch.terminal.hotkey = "cmd-enter"
-# launch.terminal.app = "Terminal"   # or Ghostty
+# Ghostty is primary (themes already paint it). Terminal.app if Ghostty is absent.
+[terminal]
+chord = "Super+Return"
+hotkey = "cmd-enter"
+app = "Ghostty"
+fallback = "Terminal"
 
 # [mac-mapped] Super+Shift+Return — Browser
-# launch.browser.hotkey = "cmd-shift-enter"
+[browser]
+chord = "Super+Shift+Return"
+hotkey = "cmd-shift-enter"
+app = "default-browser"
+stock_mac = "Safari"
 
-# [mac-mapped] Super+Shift+F — Files (Finder)
-# launch.files.hotkey = "cmd-shift-f"
-# launch.files.app = "Finder"
+# [mac-mapped] Super+Shift+F — Files
+[files]
+chord = "Super+Shift+F"
+hotkey = "cmd-shift-f"
+app = "Finder"
 
 # [mac-mapped] Super+Shift+N — Editor
-# launch.editor.hotkey = "cmd-shift-n"
+# TextEdit is on every Mac. Point this at Cursor / VS Code / Zed / Nova if you write there.
+[editor]
+chord = "Super+Shift+N"
+hotkey = "cmd-shift-n"
+app = "TextEdit"
+overridable = true
 
-# [mac-mapped] Super+Shift+M — Music.app
-# launch.music.hotkey = "cmd-shift-m"
-# launch.music.app = "Music"
+# [mac-mapped] Super+Shift+M — Music
+[music]
+chord = "Super+Shift+M"
+hotkey = "cmd-shift-m"
+app = "Music"
 
-# [mac-mapped] Super+Shift+/ — Passwords (1Password if present)
-# launch.passwords.hotkey = "cmd-shift-slash"
+# [mac-mapped] Super+Shift+/ — Passwords
+# Skip this row if 1Password is not installed. Do not substitute a marketplace extension.
+[passwords]
+chord = "Super+Shift+/"
+hotkey = "cmd-shift-slash"
+app = "1Password"
+if_missing = "skip"
 
-# [mac-mapped] Super+Escape — system commands (lock / sleep / restart)
-# launch.system.hotkey = "cmd-esc"
+# [mac-mapped] Super+Escape — system commands
+# Raycast built-in System Actions. No power-menu UI. No marketplace.
+# Super+Space, then type lock / sleep / restart.
+# Optional one-shot: bind Super+Escape to Lock Screen.
+[system]
+chord = "Super+Escape"
+hotkey = "cmd-esc"
+via = "raycast-system-actions"
+commands = ["Lock Screen", "Sleep", "Restart"]
+one_shot = "Lock Screen"
