@@ -4,6 +4,10 @@
 #   ./bin/install              full path (packages + configs + Kyoto + start)
 #   ./bin/install --copy-only  configs + Kyoto only (tests / re-copy)
 #
+# Full path also installs SwipeAeroSpace (AeroSpace goodies) so 3-finger
+# swipe can run aerospace workspace next / prev. Accessibility is a
+# captain next step — this script cannot grant it.
+#
 # Re-run is safe: Super map, workspace pills, borders, Ghostty, themes,
 # and bins overwrite. launch.conf and agents.conf are left alone if
 # present. Leftover clock.sh / front_app.sh are deleted.
@@ -115,12 +119,17 @@ install_packages() {
   if skip_machine; then
     return 0
   fi
-  # aerospace + ghostty are casks. sketchybar + borders are formulae.
+  # aerospace + ghostty + swipeaerospace are casks.
+  # sketchybar + borders are formulae.
   # Do not add a third-party launcher cask.
   brew install --cask nikitabobko/tap/aerospace
   brew install FelixKratz/formulae/sketchybar
   brew install FelixKratz/formulae/borders
   brew install --cask ghostty
+  # Official AeroSpace-goodies 3-finger swipe helper.
+  # Maps trackpad swipe to `aerospace workspace next` / `prev`.
+  # https://nikitabobko.github.io/AeroSpace/goodies
+  brew install --cask mediosz/tap/swipeaerospace
 }
 
 copy_file() {
@@ -226,6 +235,13 @@ open_aerospace() {
   open -a AeroSpace || true
 }
 
+open_swipeaerospace() {
+  if ! command -v open >/dev/null 2>&1; then
+    return 0
+  fi
+  open -a SwipeAeroSpace || true
+}
+
 start_aerospace() {
   if reload_aerospace; then
     return 0
@@ -243,6 +259,7 @@ start_stack() {
     return 0
   fi
   start_aerospace
+  open_swipeaerospace
   if ! command -v brew >/dev/null 2>&1; then
     return 0
   fi
@@ -258,6 +275,9 @@ Omakase is on disk. Captain next steps:
 1. Accessibility
    Grant Accessibility to AeroSpace when macOS asks
    (System Settings → Privacy & Security → Accessibility).
+   Grant Accessibility to SwipeAeroSpace as well. 3-finger swipe
+   needs it to run aerospace workspace next / prev. Open
+   SwipeAeroSpace once (menu extra) and leave it running.
 
 2. Super+Space and the first binds
    Super+Space opens the Omakase launcher (osascript until the Swift

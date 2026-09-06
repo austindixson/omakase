@@ -66,10 +66,13 @@ gaps = cfg["gaps"]
 if gaps["inner"]["horizontal"] != 8 or gaps["inner"]["vertical"] != 8:
     print("FAIL aerospace: inner gaps must be 8", file=sys.stderr)
     sys.exit(1)
-for side in ("left", "right", "top", "bottom"):
+for side in ("left", "right", "bottom"):
     if gaps["outer"][side] != 10:
         print(f"FAIL aerospace: outer.{side} must be 10", file=sys.stderr)
         sys.exit(1)
+if gaps["outer"]["top"] != 34:
+    print("FAIL aerospace: outer.top must be 34 (bar height + outer gap)", file=sys.stderr)
+    sys.exit(1)
 
 rules = cfg.get("on-window-detected") or []
 runs = [row.get("run") for row in rules]
@@ -147,6 +150,24 @@ if ! grep -qi 'dwindle' "${ROOT}/docs/tiling.md"; then
 fi
 if ! grep -qi 'SIP' "${ROOT}/docs/tiling.md"; then
   bad "docs/tiling.md must name SIP"
+fi
+if ! grep -qi 'native macOS Spaces' "${ROOT}/docs/tiling.md"; then
+  bad "docs/tiling.md must say workspaces are not native Spaces"
+fi
+if ! grep -q 'SwipeAeroSpace' "${ROOT}/docs/tiling.md"; then
+  bad "docs/tiling.md must name SwipeAeroSpace"
+fi
+if ! grep -q 'outer.top = 34' "${ROOT}/docs/tiling.md"; then
+  bad "docs/tiling.md must pin outer.top = 34"
+fi
+if ! grep -q 'SwipeAeroSpace' "${ROOT}/README.md"; then
+  bad "README must name SwipeAeroSpace"
+fi
+if ! grep -q 'mediosz/tap/swipeaerospace' "${ROOT}/README.md"; then
+  bad "README must name the SwipeAeroSpace cask"
+fi
+if ! grep -q 'SwipeAeroSpace' "${ROOT}/docs/bind-parity.md"; then
+  bad "docs/bind-parity.md must name SwipeAeroSpace"
 fi
 
 if [ "${fail}" -ne 0 ]; then

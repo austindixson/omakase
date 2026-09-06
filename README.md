@@ -44,6 +44,7 @@ A locked macOS desktop that feels like Omarchy without leaving Apple’s apps.
 These are explicit. Do not “just add” them.
 
 - **Replace the macOS window server.** AeroSpace tiles on top of it. Period.
+- **Native macOS Spaces as the workspace engine.** AeroSpace emulates virtual workspaces. It does not create or switch real Spaces. 3-finger swipe is SwipeAeroSpace → `aerospace workspace next` / `prev`. Not yabai. Not SIP off.
 - **yabai / SIP-off as the default.** SIP stays on. No scripting SIP disable.
 - **Full Quickshell clone.** Workspace pills in the Mac menu bar. No Linux shell rewrite. No Omarchy-style status bar.
 - **Dual-boot / Asahi.** This is macOS. Stay on macOS.
@@ -108,11 +109,17 @@ One shot from a clone of this repo:
 
 The script confirms SIP is on (and exits if it is not — there is no
 SIP-off path), requires Homebrew, installs AeroSpace, SketchyBar,
-JankyBorders, and Ghostty, copies the Super map / workspace pills /
-borders / Ghostty / themes / owned launcher, paints Kyoto, and starts
-the stack where it can. Re-run is safe: product files overwrite;
-`launch.conf` and `agents.conf` are left alone if you already have them.
-Leftover `clock.sh` / `front_app.sh` from an older bar are deleted.
+JankyBorders, Ghostty, and SwipeAeroSpace, copies the Super map /
+workspace pills / borders / Ghostty / themes / owned launcher, paints
+Kyoto, and starts the stack where it can. Re-run is safe: product files
+overwrite; `launch.conf` and `agents.conf` are left alone if you already
+have them. Leftover `clock.sh` / `front_app.sh` from an older bar are
+deleted.
+
+AeroSpace workspaces are **not** native macOS Spaces. Tiles sit below
+the 24px SketchyBar pills (`gaps.outer.top = 34` = 24 + 10). 3-finger
+swipe between workspaces is SwipeAeroSpace, which runs
+`aerospace workspace next` / `prev`. See [`docs/tiling.md`](docs/tiling.md).
 
 If Homebrew is missing, the script prints the official installer command
 and stops. Install brew, add it to `PATH`, then re-run `./bin/install`.
@@ -122,7 +129,10 @@ packages. That is also the Linux-testable path.
 
 ### Captain next steps (the script prints these)
 
-1. Grant Accessibility to AeroSpace when macOS asks.
+1. Grant Accessibility to AeroSpace when macOS asks. Grant Accessibility
+   to **SwipeAeroSpace** as well (System Settings → Privacy & Security →
+   Accessibility), then open SwipeAeroSpace and leave it running.
+   3-finger swipe maps to `aerospace workspace next` / `prev`.
 2. Super+Space opens the Omakase launcher. Super+Return / Super+Shift+F
    are the first daily binds. Super+Ctrl+Shift+Space cycles themes.
    Option+Enter focuses or launches the primary agent.
@@ -162,7 +172,7 @@ Full table: [`config/launcher/README.md`](config/launcher/README.md).
 
 ### Smoke the v0 path
 
-1. Super section A binds respond (workspace jump, focus, move, float / fullscreen, close). New windows tile; only Final Cut / Logic / Photos / QuickTime float.
+1. Super section A binds respond (workspace jump, focus, move, float / fullscreen, close). New windows tile below the SketchyBar pills (`gaps.outer.top = 34`); only Final Cut / Logic / Photos / QuickTime float.
 2. Open Final Cut Pro (or Photos / QuickTime). It still opens. Native.
 3. `Super+Ctrl+Shift+Space` cycles Kyoto → Mocha → Ume. Workspace pills,
    borders, and a new Ghostty window follow. No clock / wordmark / theme name.
@@ -198,11 +208,17 @@ brew install --cask nikitabobko/tap/aerospace
 brew install FelixKratz/formulae/sketchybar
 brew install FelixKratz/formulae/borders
 brew install --cask ghostty
+brew install --cask mediosz/tap/swipeaerospace
 ```
 
-Grant Accessibility to AeroSpace when macOS asks. SketchyBar is only
-workspace pills on the native menu bar — no Screen Recording, no clock /
-wordmark / theme-name chrome. See [`config/sketchybar/README.md`](config/sketchybar/README.md).
+Grant Accessibility to AeroSpace when macOS asks. Grant Accessibility
+to SwipeAeroSpace as well, then open the app and leave it running.
+3-finger swipe is `aerospace workspace next` / `prev` — not native
+Spaces. SketchyBar is only workspace pills on the native menu bar —
+no Screen Recording, no clock / wordmark / theme-name chrome. Tiles
+clear the 24px pills (`gaps.outer.top = 34`). See
+[`config/sketchybar/README.md`](config/sketchybar/README.md) and
+[`docs/tiling.md`](docs/tiling.md).
 
 #### 3. Drop in the configs
 
@@ -323,7 +339,10 @@ Must show, in order:
 1. **Cold Mac** — SIP enabled, no prior AeroSpace / SketchyBar / launcher setup
    (or a clearly wiped config).
 2. **Install ≤10 minutes** — `./bin/install` (Homebrew, AeroSpace,
-   SketchyBar, Omakase launcher, Super map). Wall-clock visible.
+   SketchyBar, SwipeAeroSpace, Omakase launcher, Super map). Wall-clock visible.
+   After install: tiles sit below the 24px pills (`gaps.outer.top = 34`);
+   3-finger swipe (SwipeAeroSpace + Accessibility) walks AeroSpace
+   workspaces — not native Spaces.
 3. **Super binds** — workspace jump, focus, move, float/fullscreen, close.
 4. **Final Cut still opens** — launch Final Cut Pro (or another Apple pro app
    if FCP is not installed) and use it as a normal Mac app.

@@ -16,6 +16,12 @@ colors.sh             active theme tokens
 plugins/spaces.sh     one pill
 ```
 
+Height is a contract with AeroSpace. `gaps.outer.top` in
+`config/aerospace/aerospace.toml` is **34** = this height (24) + the
+Hyprland outer gap (10). The bar’s bottom is the top of the tiling
+view. If you change `height=` here, change `gaps.outer.top` to
+`height + 10` and update `docs/tiling.md`.
+
 Do not add `clock.sh`, `front_app.sh`, a wordmark, weather, or a theme
 name. A re-copy must delete those if a previous install left them.
 
