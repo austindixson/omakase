@@ -20,6 +20,9 @@ need_file "${ROOT}/config/sketchybar/sketchybarrc"
 need_file "${ROOT}/config/sketchybar/plugins/spaces.sh"
 need_file "${ROOT}/config/sketchybar/README.md"
 need_file "${ROOT}/docs/tiling.md"
+need_file "${ROOT}/docs/proof-video.md"
+need_file "${ROOT}/docs/proof/README.md"
+need_file "${ROOT}/bin/omakase-proof-demo"
 
 plugin_count=0
 for f in "${ROOT}/config/sketchybar/plugins/"*; do
@@ -115,6 +118,7 @@ fi
 docs_need_option_enter=(
   "${ROOT}/README.md"
   "${ROOT}/docs/bind-parity.md"
+  "${ROOT}/docs/proof-video.md"
   "${ROOT}/config/agents/README.md"
 )
 for f in "${docs_need_option_enter[@]}"; do
