@@ -55,13 +55,17 @@ automatically-unhide-macos-hidden-apps = false
 key-mapping.preset = 'qwerty'
 
 # Hyprland-ish gaps (inner ~ gaps_in, outer ~ gaps_out). One set, not per-theme.
-# Top matches the other outer sides: workspace pills overlay the native menu
-# bar (24px). macOS already reserves that strip. See docs/tiling.md.
+# SketchyBar workspace pills: height is pinned in config/sketchybar/sketchybarrc
+# (24). The bar's bottom is the top of the tiling view — tiles must not overlap
+# it. gaps.outer.top = bar height + Hyprland outer gap = 24 + 10 = 34.
+# (A 22px live bar is still cleared: 22 + 12 = 34.) If you change sketchybarrc
+# height, change this value to height + 10. Left/right/bottom stay 10.
+# See docs/tiling.md.
 gaps.inner.horizontal = 8
 gaps.inner.vertical = 8
 gaps.outer.left = 10
 gaps.outer.bottom = 10
-gaps.outer.top = 10
+gaps.outer.top = 34
 gaps.outer.right = 10
 
 # New windows tile into the tree. Float is only the Apple-pro exceptions
@@ -90,7 +94,9 @@ on-window-detected = [
 
     # Super+Tab / Super+Shift+Tab — next / previous workspace
     # Deferred. cmd-tab / cmd-shift-tab is the macOS app switcher. Do not steal it.
-    # Sequential walk can land later on a non-colliding chord (e.g. cmd-ctrl-left/right).
+    # Sequential walk is 3-finger swipe via SwipeAeroSpace (AeroSpace goodies).
+    # That helper issues `workspace next` / `workspace prev` — do not invent
+    # a swipe key here. https://nikitabobko.github.io/AeroSpace/goodies
     # cmd-tab = 'workspace next --wrap-around'
     # cmd-shift-tab = 'workspace prev --wrap-around'
 

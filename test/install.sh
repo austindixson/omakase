@@ -145,6 +145,14 @@ case "${next}" in
 esac
 
 case "${next}" in
+  *'SwipeAeroSpace'*) ;;
+  *)
+    echo "FAIL next steps missing SwipeAeroSpace Accessibility" >&2
+    fail=1
+    ;;
+esac
+
+case "${next}" in
   *'Spotlight'*) ;;
   *)
     echo "FAIL next steps missing Spotlight" >&2
@@ -208,6 +216,26 @@ fi
 
 if ! grep -q 'There is no SIP-off install path' "${INSTALL}"; then
   echo "FAIL installer is not loud when SIP is off" >&2
+  fail=1
+fi
+
+if ! grep -q 'mediosz/tap/swipeaerospace' "${INSTALL}"; then
+  echo "FAIL installer does not install SwipeAeroSpace" >&2
+  fail=1
+fi
+
+if ! grep -q 'SwipeAeroSpace' "${INSTALL}"; then
+  echo "FAIL installer does not name SwipeAeroSpace" >&2
+  fail=1
+fi
+
+if ! grep -q 'workspace next' "${INSTALL}"; then
+  echo "FAIL installer does not say swipe maps to workspace next/prev" >&2
+  fail=1
+fi
+
+if ! grep -q 'gaps.outer.top = 34' "${CFG}/aerospace/aerospace.toml"; then
+  echo "FAIL copied Super map missing gaps.outer.top = 34" >&2
   fail=1
 fi
 

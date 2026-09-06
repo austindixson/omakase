@@ -68,8 +68,8 @@ float / fullscreen, scratchpad, close.
 
 | Omarchy | Why deferred |
 | --- | --- |
-| `Super+Tab` | Next workspace. `cmd-tab` is the macOS app switcher — do not steal it. Sequential walk can land later on a non-colliding chord (e.g. `cmd-ctrl-left` / `cmd-ctrl-right`). Former workspace is `Super+Ctrl+Tab`. |
-| `Super+Shift+Tab` | Previous workspace. Same collision as `cmd-shift-tab` (app switcher reverse). |
+| `Super+Tab` | Next workspace. `cmd-tab` is the macOS app switcher — do not steal it. Sequential walk is 3-finger swipe via [SwipeAeroSpace](https://github.com/MediosZ/SwipeAeroSpace) (`aerospace workspace next` / `prev`). Not a native Space. See `docs/tiling.md`. Former workspace is `Super+Ctrl+Tab`. |
+| `Super+Shift+Tab` | Previous workspace. Same collision as `cmd-shift-tab` (app switcher reverse). Same swipe helper, opposite direction. |
 | `Super+L` | Hyprland dwindle ↔ scrolling. AeroSpace has tiles / accordion, not this pair. |
 | `Super+P` | Dwindle pseudo. Hyprland-only. |
 | `Super+J` | Toggle split. Hyprland-only. |
@@ -77,7 +77,7 @@ float / fullscreen, scratchpad, close.
 | `Super+G` / group chords | Hyprland window groups. Nested tab groups stay deferred. |
 | `Super+Alt+F` / `Super+Ctrl+F` | Full-width / tiled-fullscreen Hyprland modes. |
 | Super + mouse drag / resize | Nice later. Not a daily keyboard bind. |
-| Super + scroll workspaces | Mouse. Not daily keyboard. |
+| Super + scroll workspaces | Mouse. Not daily keyboard. 3-finger swipe (SwipeAeroSpace) is the shipped sequential walk. |
 
 ---
 

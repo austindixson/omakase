@@ -20,6 +20,7 @@ source "${CONFIG_DIR}/colors.sh"
 FONT="SF Pro:Bold:12.0"
 
 # Transparent strip over the native 24px menu bar. No blur, no chrome.
+# Height is a contract: gaps.outer.top in aerospace.toml is 34 = 24 + 10.
 sketchybar --bar \
   height=24 \
   position=top \
