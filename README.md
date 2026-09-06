@@ -293,7 +293,7 @@ config/agents/          Local agent catalog + captain override
 docs/bind-parity.md     Daily bind checklist (Omarchy A / B / C)
 docs/tiling.md          SIP-on AeroSpace vs Hyprland (honest limits)
 docs/proof-video.md     v0 shot list (post-#8 product)
-docs/proof/             Placeholder for omakase-v0.mp4 (or a release link)
+docs/proof/             Release asset pointer (proof-v0 / omakase-v0.mp4)
 ```
 
 The launcher is `bin/omakase-launch` plus, when you build it, the panel
@@ -319,12 +319,26 @@ Deferred on purpose (not counted against the 80%):
 ## Proof video (v0)
 
 Public proof that a cold Mac becomes Omakase. One take, no jump cuts that hide
-time. The README plus this video are the v0 demo.
+time. The README plus this video are the v0 demo. SIP on. Owned launcher.
+Workspace-only pills. No third-party launcher.
+
+**Watch:** [omakase-v0.mp4](https://github.com/austindixson/omakase/releases/download/proof-v0/omakase-v0.mp4)
+— release asset (prerelease tag [`proof-v0`](https://github.com/austindixson/omakase/releases/tag/proof-v0)).
+
+Capture is complete on gHost64. The binary is not in git.
+
+### Proof shots
+
+- SIP on
+- Tiling
+- Workspace-only pills (no clock / wordmark / theme name)
+- ⌘Space owned launcher
+- ⌥⏎ primary (Option+Enter)
+- Theme cycle Kyoto → Mocha → Ume
 
 Shot list: [`docs/proof-video.md`](docs/proof-video.md).
 Recording aid: `bin/omakase-proof-demo` (aerospace CLI + `omakase-launch` /
-`omakase-theme` / `omakase-agent`). Artifact: [`docs/proof/omakase-v0.mp4`](docs/proof/)
-or a release link.
+`omakase-theme` / `omakase-agent`).
 
 Must show, in order:
 
@@ -345,8 +359,8 @@ Must show, in order:
 7. **Theme cycle** — `Super+Ctrl+Shift+Space` cycles Kyoto → Mocha → Ume.
    Pills, borders, and a new Ghostty window follow.
 
-Link the video from a future release note. Capture is not in this repo
-until a Mac take lands in `docs/proof/`.
+The published file is the `proof-v0` release asset, not a path under
+`docs/proof/`.
 
 ## License
 

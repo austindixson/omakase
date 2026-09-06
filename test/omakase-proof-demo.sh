@@ -65,7 +65,9 @@ need_line $'theme\tkyoto'
 need_line $'theme\tcycle'
 
 docs="${ROOT}/docs/proof-video.md"
-for needle in "Option+Enter" "Spotlight" "workspace pills" "owned launcher" "SIP"; do
+asset="https://github.com/austindixson/omakase/releases/download/proof-v0/omakase-v0.mp4"
+release="https://github.com/austindixson/omakase/releases/tag/proof-v0"
+for needle in "Option+Enter" "Spotlight" "workspace pills" "owned launcher" "SIP" "## Proof shots" "${asset}" "${release}"; do
   if ! grep -q "${needle}" "${docs}"; then
     echo "FAIL docs/proof-video.md missing ${needle}" >&2
     fail=1
@@ -74,6 +76,14 @@ done
 
 if ! grep -q 'omakase-v0.mp4' "${ROOT}/docs/proof/README.md"; then
   echo "FAIL docs/proof/README.md must name omakase-v0.mp4" >&2
+  fail=1
+fi
+if ! grep -q "${asset}" "${ROOT}/docs/proof/README.md"; then
+  echo "FAIL docs/proof/README.md must link the proof-v0 asset" >&2
+  fail=1
+fi
+if ! grep -q "${asset}" "${ROOT}/README.md"; then
+  echo "FAIL README must link the proof-v0 asset" >&2
   fail=1
 fi
 

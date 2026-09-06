@@ -1,15 +1,31 @@
 # Proof video (v0)
 
 Public proof that a cold Mac becomes Omakase. One take. No jump cuts that
-hide time. SIP on. Owned launcher. No third-party launcher.
+hide time. SIP on. Owned launcher. Workspace-only pills. No third-party
+launcher.
 
-The README criteria and this shot list are the same path. Film in this
-order. Drop the file at [`docs/proof/omakase-v0.mp4`](proof/omakase-v0.mp4)
-or link a release asset from [`docs/proof/`](proof/).
+**Watch:** [omakase-v0.mp4](https://github.com/austindixson/omakase/releases/download/proof-v0/omakase-v0.mp4)
+— release asset (prerelease tag [`proof-v0`](https://github.com/austindixson/omakase/releases/tag/proof-v0)).
 
-Recording aid after install: `bin/omakase-proof-demo` (or
-`bin/omakase-proof-demo --print` for the plan). The script does not
-install, does not uncheck Spotlight, and does not capture video.
+Capture is complete on gHost64 (`~/Desktop/omakase-proof.mp4`). The public
+file is published under prerelease tag `proof-v0` as `omakase-v0.mp4`. The
+binary is not in this tree.
+
+The README criteria and this shot list are the same path. Recording aid
+after install: `bin/omakase-proof-demo` (or `--print` for the plan). The
+script does not install, does not uncheck Spotlight, and does not capture
+video.
+
+## Proof shots
+
+What the gHost64 take shows:
+
+- SIP on (`csrutil status`: enabled)
+- Tiling — new windows tile; Hyprland-ish gaps
+- Workspace-only pills in the native menu bar (no clock / wordmark / theme name)
+- ⌘Space owned launcher (Spotlight’s ⌘Space unchecked; not a third-party launcher)
+- ⌥⏎ primary local agent (Option+Enter)
+- Theme cycle Kyoto → Mocha → Ume (pills, borders, Ghostty)
 
 ## Shot list
 
@@ -98,8 +114,8 @@ Ume land on camera.
 3. Film shots 3–7 by hand, or run `bin/omakase-proof-demo` in Ghostty
    and play Super+Space / Option+Enter / Final Cut yourself where the
    script only prints a plan.
-4. Stop. Write `docs/proof/omakase-v0.mp4` or attach a release and link
-   it from [`docs/proof/README.md`](proof/README.md).
+4. Stop. The published take is the `proof-v0` release asset above, not a
+   file in `docs/proof/`.
 
 `PROOF_PAUSE` (seconds, default `1`) spaces driver steps. The public
 take is still one continuous recording.
